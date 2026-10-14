@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <text x="160" y="42" text-anchor="middle"
+        font-family="'LXGW WenKai TC', 'Songti SC', serif"
+        font-size="36" font-weight="900" fill="#2A2418"
+        letter-spacing="6">厚生錄</text>
+  <line x1="40" y1="58" x2="280" y2="58"
+        stroke="#8B3A3A" stroke-width="1"/>
+  <text x="160" y="74" text-anchor="middle"
+        font-family="'EB Garamond', Georgia, serif"
+        font-size="13" font-style="italic" fill="#6B5D4A"
+        letter-spacing="2">HouSheng Lu</text>
+</svg>

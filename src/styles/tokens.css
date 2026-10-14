@@ -1,0 +1,62 @@
+:root {
+  /* 颜色 */
+  --color-bg: #F2E8D5;
+  --color-bg-alt: #E8DCC0;
+  --color-ink: #2A2418;
+  --color-ink-soft: #6B5D4A;
+  --color-vermillion: #8B3A3A;
+  --color-indigo: #2C4A6B;
+  --color-seal: #B73229;
+  --color-border: #C9B894;
+
+  /* 字体 */
+  --font-zh-heading: 'LXGW WenKai TC', 'Songti SC', 'STSong', serif;
+  --font-zh-body: 'LXGW WenKai TC', 'Songti SC', 'STSong', serif;
+  --font-en-heading: 'EB Garamond', Georgia, serif;
+  --font-en-body: 'EB Garamond', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+
+  /* 字号 */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-md: 18px;
+  --text-lg: 22px;
+  --text-xl: 28px;
+  --text-2xl: 36px;
+  --text-3xl: 48px;
+  --text-display: 72px;
+
+  /* 行高 */
+  --leading-tight: 1.2;
+  --leading-normal: 1.6;
+  --leading-loose: 2;
+
+  /* 间距 */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-8: 48px;
+  --space-10: 64px;
+  --space-12: 96px;
+
+  /* 圆角 */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+
+  /* 缓动 */
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-fold: cubic-bezier(0.7, 0, 0.3, 1);
+  --ease-stamp: cubic-bezier(0.6, -0.1, 0.3, 1.2);
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+
+  /* 容器 */
+  --container-narrow: 720px;
+  --container-base: 960px;
+  --container-wide: 1200px;
+}

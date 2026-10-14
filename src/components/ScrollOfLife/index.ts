@@ -1,0 +1,1 @@
+export { ScrollOfLife } from './ScrollOfLife';

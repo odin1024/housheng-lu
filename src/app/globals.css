@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '../styles/tokens.css';
+
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-zh-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  /* 仿竹纸背景纹理 */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cline x1='0' y1='0' x2='120' y2='120' stroke='%23E8DCC0' stroke-width='0.5' opacity='0.4'/%3E%3Cline x1='120' y1='0' x2='0' y2='120' stroke='%23E8DCC0' stroke-width='0.5' opacity='0.4'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+}
+
+::selection {
+  background: var(--color-vermillion);
+  color: var(--color-bg);
+}
+
+a {
+  color: var(--color-indigo);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--color-vermillion);
+  transition: color var(--duration-base) var(--ease-default);
+}
+
+a:hover {
+  color: var(--color-vermillion);
+  border-bottom-style: solid;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* 古籍字距工具类 */
+.tracking-guo {
+  letter-spacing: 0.5em;
+}
+
+.tracking-guo-sm {
+  letter-spacing: 0.3em;
+}
+
+/* 朱丝栏 */
+.zhu-si-lan {
+  border: none;
+  border-top: 1px solid var(--color-vermillion);
+  margin: var(--space-6) 0;
+}
+
+/* 印章基础样式 */
+.seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--color-seal);
+  color: var(--color-seal);
+  font-family: var(--font-mono);
+  transition: all var(--duration-base) var(--ease-default);
+}
+
+.seal-active {
+  background: var(--color-seal);
+  color: var(--color-bg);
+  animation: seal-stamp 300ms var(--ease-stamp);
+}
+
+@keyframes seal-stamp {
+  0% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 卷端 */
+.juan-end {
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-ink-soft);
+  letter-spacing: 0.3em;
+  margin: var(--space-8) 0 var(--space-4);
+}
+
+/* 标题 - 回目标题 */
+.title-juanmu {
+  font-family: var(--font-zh-heading);
+  font-size: var(--text-3xl);
+  font-weight: 900;
+  text-align: center;
+  margin: var(--space-8) 0 var(--space-2);
+  letter-spacing: 0.1em;
+}
+
+.title-juanmu-sub {
+  font-family: var(--font-zh-heading);
+  font-size: var(--text-lg);
+  text-align: center;
+  margin-bottom: var(--space-6);
+  letter-spacing: 0.5em;
+  color: var(--color-ink-soft);
+}
+
+/* 大字说人话 */
+.plain-language {
+  font-family: var(--font-zh-body);
+  font-size: var(--text-lg);
+  line-height: var(--leading-loose);
+  text-align: center;
+  padding: var(--space-5);
+  margin: var(--space-4) 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* 字段标签 (仿古籍夹注) */
+.field-label {
+  display: inline-block;
+  font-size: var(--text-sm);
+  color: var(--color-ink-soft);
+  border-bottom: 1px solid var(--color-vermillion);
+  padding-bottom: 2px;
+  margin-bottom: var(--space-2);
+  letter-spacing: 0.3em;
+}
+
+/* 暗色模式(急救 PWA 用) */
+.dark-mode {
+  --color-bg: #1A1610;
+  --color-bg-alt: #2A2418;
+  --color-ink: #F2E8D5;
+  --color-ink-soft: #C9B894;
+  --color-border: #4A3D2A;
+}
+
+.dark-mode body {
+  background: var(--color-bg);
+  background-image: none;
+}
+
+/* 隐藏滚动条但保留滚动 */
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hidden {
+  scrollbar-width: none;
+}

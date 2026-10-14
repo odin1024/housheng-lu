@@ -1,0 +1,53 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+.vscode
+.idea
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local env files
+.env*.local
+.env
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# upstream submodule
+/content/upstream/
+
+# generated data (rebuilt by sync)
+/data/entries.json
+/data/sections.json
+/data/sync-log.json
+/data/search-index.json
+
+# node version
+.node-version
+
+# Cloudflare
+.wrangler/
+.dev.vars

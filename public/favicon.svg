@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <defs>
+    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="5"/>
+      <feDisplacementMap in="SourceGraphic" scale="0.8"/>
+    </filter>
+  </defs>
+
+  <!-- 不规则仿旧印泥边 -->
+  <rect x="6" y="6" width="84" height="84"
+        fill="none" stroke="#B73229" stroke-width="3"
+        filter="url(#rough)"/>
+
+  <!-- 厚生录 三字九宫格排印 -->
+  <g filter="url(#ink)" font-family="'LXGW WenKai TC', 'Songti SC', serif" font-weight="900" fill="#B73229">
+    <text x="48" y="40" text-anchor="middle" font-size="22">厚</text>
+    <text x="30" y="64" text-anchor="middle" font-size="22">生</text>
+    <text x="66" y="64" text-anchor="middle" font-size="22">錄</text>
+  </g>
+</svg>

@@ -1,0 +1,44 @@
+{
+  "name": "housheng-lu",
+  "version": "0.1.0",
+  "private": true,
+  "description": "厚生錄 — 《高性价比人生指南》视觉化再刊本",
+  "license": "(CC-BY-4.0 AND MIT)",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "sync": "node scripts/sync-upstream.mjs",
+    "parse": "node scripts/parse-entries.mjs",
+    "build:data": "pnpm sync && pnpm parse",
+    "verify": "node scripts/verify-compliance.mjs",
+    "prebuild": "pnpm build:data"
+  },
+  "dependencies": {
+    "next": "14.2.15",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "framer-motion": "11.11.7",
+    "flexsearch": "0.7.43",
+    "zustand": "5.0.0",
+    "markdown-it": "14.1.0",
+    "gray-matter": "4.0.3",
+    "lucide-react": "0.453.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.7.5",
+    "@types/react": "18.3.11",
+    "@types/react-dom": "18.3.0",
+    "@types/markdown-it": "14.1.2",
+    "@types/flexsearch": "0.7.6",
+    "typescript": "5.6.3",
+    "tailwindcss": "3.4.14",
+    "postcss": "8.4.47",
+    "autoprefixer": "10.4.20",
+    "eslint": "8.57.1",
+    "eslint-config-next": "14.2.15",
+    "prettier": "3.3.3"
+  }
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" width="120" height="40">
+  <ellipse cx="60" cy="20" rx="56" ry="16"
+           fill="none" stroke="#B73229" stroke-width="1.8"/>
+  <text x="60" y="26" text-anchor="middle"
+        font-family="'LXGW WenKai TC', 'Songti SC', serif"
+        font-size="14" font-weight="900" fill="#B73229"
+        letter-spacing="6">厚生錄</text>
+</svg>

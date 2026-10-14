@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 篆字卷轴 — 长卷 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <path d="M8 16 Q 8 12 12 12 L 52 12 Q 56 12 56 16 L 56 18 L 8 18 Z"
+        fill="none" stroke="#8B3A3A" stroke-width="2.5"/>
+  <line x1="12" y1="22" x2="52" y2="22" stroke="#8B3A3A" stroke-width="2"/>
+  <line x1="12" y1="30" x2="52" y2="30" stroke="#8B3A3A" stroke-width="2"/>
+  <line x1="12" y1="38" x2="52" y2="38" stroke="#8B3A3A" stroke-width="2"/>
+  <line x1="12" y1="46" x2="52" y2="46" stroke="#8B3A3A" stroke-width="2"/>
+  <path d="M8 50 L 56 50 L 56 52 Q 56 56 52 56 L 12 56 Q 8 56 8 52 Z"
+        fill="none" stroke="#8B3A3A" stroke-width="2.5"/>
+</svg>

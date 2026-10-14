@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 篆字印章 — 通用印章 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect x="14" y="10" width="36" height="44" fill="none" stroke="#B73229" stroke-width="3"/>
+  <rect x="14" y="10" width="36" height="6" fill="#B73229"/>
+  <text x="32" y="42" text-anchor="middle"
+        font-family="'LXGW WenKai TC', serif" font-size="18" font-weight="900" fill="#B73229">章</text>
+</svg>
