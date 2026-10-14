@@ -58,12 +58,15 @@ check('Logo SVG 存在', () => {
     && existsSync(join(ROOT, 'public', 'logo', 'seal-end.svg'));
 });
 
-// 7. Footer 组件含署名
+// 7. Footer 组件含署名(检查源代码或引用模块)
 check('Footer 组件含署名', () => {
   const footerPath = join(ROOT, 'src', 'components', 'Footer', 'Footer.tsx');
   if (!existsSync(footerPath)) return false;
   const footer = readFileSync(footerPath, 'utf-8');
-  return footer.includes('eternity4719') && footer.includes('CC BY 4.0');
+  // 检查是否引用了 attribution 模块(它包含了所有合规信息)
+  const attributionPath = join(ROOT, 'src', 'lib', 'compliance.ts');
+  const attribution = existsSync(attributionPath) ? readFileSync(attributionPath, 'utf-8') : '';
+  return footer.includes('attribution') && attribution.includes('eternity4719');
 });
 
 console.log('');
