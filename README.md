@@ -69,6 +69,11 @@ pnpm dev            # 打开 http://localhost:3000
 > 原因见 [SECURITY.md](SECURITY.md)：`next@14` 有一条 critical 公告只在 **Windows 宿主**上成立，而本项目参考环境就是 Windows；
 > 默认 `next start` 会绑 `0.0.0.0`，同网段可直连，没必要冒这个风险。
 
+> **构建内存**：`next build` 会为 797 个静态页起构建 worker，**建议至少留 3GB 可用内存**。
+> 实测在只剩 2.9GB 的机器上会以 `exit code 134`（V8 OOM）失败 —— 那是内存不足，不是代码问题；
+> 腾出内存重跑即可通过。内存实在紧张时可在 `next.config.mjs` 临时加
+> `experimental: { workerThreads: false, cpus: 1 }` 降低并发（会更慢）。
+
 ### 数据从哪来
 
 ```
