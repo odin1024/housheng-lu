@@ -1,0 +1,48 @@
+name: CI
+
+# 关于部署: 本仓库**不再内置 deploy workflow**。原因(2026-10-18 实测):
+#   原来的 deploy.yml 用 cloudflare/pages-action@v1 + directory: .next —— 结构上不可能成功
+#   (CF Pages 需要静态产物目录, 而不是 .next)。更关键的是 /api/ask 声明了
+#   `runtime = 'nodejs'` 且 SSRF 校验用到 node:dns/promises 与 node:net,
+#   **在 Cloudflare Workers(边缘运行时) 上无法运行** → CF Pages 这条路要先把 AI 路由改写。
+#   部署方式见 README「部署」一节 (推荐 Vercel 或自建 Node)。
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 先跑最便宜的检查: 署名/许可/数据是否随仓库提供
+      - name: 合规检查
+        run: pnpm verify
+
+      - name: 类型检查
+        run: pnpm type-check
+
+      - name: Lint
+        run: pnpm lint
+
+      # 数据随仓库提供 (data/*.json 已入库), 所以这一步**不需要联网同步上游**
+      - name: 构建
+        run: pnpm build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1

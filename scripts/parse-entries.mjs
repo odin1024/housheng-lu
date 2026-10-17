@@ -7,11 +7,31 @@
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const UPSTREAM_BOOK_DIR = join(ROOT, 'content', 'upstream', 'book');
+const UPSTREAM_DIR = join(ROOT, 'content', 'upstream');
 const DATA_DIR = join(ROOT, 'data');
+
+/**
+ * 每条 syncDate 的取值 = **上游那次提交的日期**, 不是"今天"
+ *
+ * 为什么: 原来写 `new Date()`, 于是每次 parse 都会把 765 条的日期全部刷新一遍,
+ * 上游明明没变也会产生 765 行 diff —— 每日同步 workflow 因此**每晚空提交一次**
+ * (审计列为 P0: 非幂等时间戳)。改成取上游提交日期后, 同一个上游提交永远得到同一天,
+ * parse 变成幂等的(重跑逐字节相同)。
+ */
+function upstreamCommitDate() {
+  try {
+    const d = execSync('git log -1 --format=%cs', { cwd: UPSTREAM_DIR, encoding: 'utf-8' }).trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
+  } catch {
+    /* 没有上游 git 信息时(例如只重解析已有 markdown) 退回今天 */
+  }
+  return new Date().toISOString().split('T')[0];
+}
 
 function log(msg) { console.log(`\x1b[36m[解析]\x1b[0m ${msg}`); }
 function ok(msg) { console.log(`\x1b[32m[完成]\x1b[0m ${msg}`); }
@@ -73,8 +93,10 @@ const SECTION_META = [
  *   - 来源：...
  *   - 备注：...
  */
-function parseEntry(block, sectionNum) {
-  const lines = block.trim().split('\n');
+function parseEntry(block, sectionNum, sectionCaliber) {
+  // 标准化换行(Windows CRLF → LF)
+  const normalized = block.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const lines = normalized.trim().split('\n');
   const titleLine = lines[0];
 
   // 提取编号和标题
@@ -124,7 +146,11 @@ function parseEntry(block, sectionNum) {
   const evidenceLevel = evidenceMatch ? evidenceMatch[1] : 'C';
 
   // 提取 DOI/链接
-  const doiMatch = fields.source.match(/(https?:\/\/\S+|doi\.org\/\S+)/);
+  // 注意: 原正则 `\S+` 会把 markdown 的收尾符号一起吞掉 (实测 760 条里 215 条的
+  // sourceUrl 以 '>' 结尾, 占 28%), 这里显式排除 > ) ] 与中英文标点
+  const doiMatch = fields.source.match(
+    /(https?:\/\/[^\s>)\]}>,;，。；]+|doi\.org\/[^\s>)\]}>,;，。；]+)/,
+  );
   const sourceUrl = doiMatch ? doiMatch[0] : null;
 
   // 简单推断成本口径(基于关键词)
@@ -159,18 +185,35 @@ function parseEntry(block, sectionNum) {
     sourceUrl,
     controversy: fields.controversy?.trim() || '',
     remark: fields.remark?.trim() || '',
-    // 派生字段在数据校验阶段计算
+    // 派生字段:
+    //   caliber 取**章节**口径 (原书章节自带, 不是逐条字段)
+    //   ratio / benefitMagnitude 原书没有对应字段, 这里只占位,
+    //   真正展示用的值在 src/lib/entries.ts + src/lib/priority.ts 读入时折算
     ratio: 'normal',
-    caliber: 'life',
+    caliber: sectionCaliber || 'life',
     benefitMagnitude: 'medium',
-    syncDate: new Date().toISOString().split('T')[0],
+    syncDate: upstreamCommitDate(),
   };
+}
+
+/**
+ * 读取章节的真实标题 —— 以 markdown 一级标题为准 (`# 12. 创业与做生意：别把家底赔进去`)
+ * SECTION_META.title 只是短名(与文件名一致), 不能当正文标题用, 否则会丢掉副标题
+ */
+function readSectionTitle(filePath) {
+  try {
+    const t = readFileSync(filePath, 'utf-8').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    const m = t.match(/^#\s*\d+\.\s*(.+)$/m);
+    return m ? m[1].trim() : '';
+  } catch {
+    return '';
+  }
 }
 
 /**
  * 解析单个章节文件
  */
-function parseSectionFile(filePath, sectionNum) {
+function parseSectionFile(filePath, sectionNum, sectionCaliber) {
   if (!existsSync(filePath)) {
     warn(`章节文件不存在: ${filePath}`);
     return [];
@@ -179,12 +222,14 @@ function parseSectionFile(filePath, sectionNum) {
   const content = readFileSync(filePath, 'utf-8');
 
   // 用 ### 切分每条
-  const blocks = content.split(/(?=^###\s+\d+\.\s+)/m);
+  // 标准化换行(Windows CRLF → LF)
+  const normalizedContent = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const blocks = normalizedContent.split(/(?=^###\s+\d+\.\s+)/m);
   const entries = [];
 
   for (const block of blocks) {
     if (!block.trim().startsWith('###')) continue;
-    const entry = parseEntry(block, sectionNum);
+    const entry = parseEntry(block, sectionNum, sectionCaliber);
     if (entry) entries.push(entry);
   }
 
@@ -216,9 +261,12 @@ function main() {
     ];
 
     let parsed = [];
+    let sectionTitle = meta.title;
     for (const f of candidates) {
       if (existsSync(f)) {
-        parsed = parseSectionFile(f, meta.num);
+        parsed = parseSectionFile(f, meta.num, meta.caliber);
+        // 标题以原文一级标题为准 (含副标题), 读不到才退回短名
+        sectionTitle = readSectionTitle(f) || meta.title;
         break;
       }
     }
@@ -232,7 +280,7 @@ function main() {
     sections.push({
       id: meta.num,
       number: meta.num,
-      title: meta.title,
+      title: sectionTitle,
       slug: meta.slug,
       caliber: meta.caliber,
       entryCount: parsed.length,
@@ -258,7 +306,9 @@ function main() {
     evidenceA: allEntries.filter((e) => e.evidenceLevel === 'A').length,
     evidenceB: allEntries.filter((e) => e.evidenceLevel === 'B').length,
     evidenceC: allEntries.filter((e) => e.evidenceLevel === 'C').length,
-    generateDate: new Date().toISOString(),
+    // 同样用上游提交日期而不是"现在": 原为 new Date() → 每次 parse 都变,
+    // 会让每日同步 workflow 天天产生一次无意义的 diff/提交 (与 syncDate 同一问题)
+    generateDate: upstreamCommitDate(),
   };
 
   const statsPath = join(DATA_DIR, 'stats.json');

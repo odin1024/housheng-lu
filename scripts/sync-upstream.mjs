@@ -66,6 +66,14 @@ function writeSyncLog(syncResult) {
     }
   }
 
+  // 幂等: 上游哈希没变就**不重写文件**。
+  // 否则每次同步都会写入新的 lastSync/date 时间戳 → 每日 workflow 天天产生空提交
+  // (审计 P0: 非幂等时间戳导致每晚无意义提交与部署)
+  if (existing.upstreamHash && existing.upstreamHash === syncResult.hash) {
+    log('上游无变化, 不更新 sync-log.json (避免产生空提交)');
+    return;
+  }
+
   const newEntry = {
     date: new Date().toISOString(),
     hash: syncResult.hash,

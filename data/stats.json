@@ -1,9 +1,8 @@
 {
-  "totalEntries": 11,
-  "totalSections": 5,
-  "evidenceA": 11,
-  "evidenceB": 0,
-  "evidenceC": 0,
-  "generateDate": "2026-10-12",
-  "note": "种子数据(11 条示例), 完整 699 条需运行 pnpm sync && pnpm parse 拉取上游"
+  "totalEntries": 765,
+  "totalSections": 34,
+  "evidenceA": 495,
+  "evidenceB": 218,
+  "evidenceC": 52,
+  "generateDate": "2026-10-15"
 }

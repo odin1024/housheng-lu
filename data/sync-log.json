@@ -1,0 +1,26 @@
+{
+  "lastSync": "2026-10-15T01:45:52.062Z",
+  "upstreamHash": "3f59f98be11305902681a8f20ed073c4c4588eee",
+  "upstreamUrl": "https://github.com/eternity4719/HowToLiveBetter.git",
+  "upstreamTag": "main",
+  "syncHistory": [
+    {
+      "date": "2026-10-15T01:45:52.061Z",
+      "hash": "3f59f98be11305902681a8f20ed073c4c4588eee",
+      "change": "updated",
+      "status": "success"
+    },
+    {
+      "date": "2026-10-14T17:15:15.456Z",
+      "hash": "4540c90a23bb311ff146d2d653cafc23c1b0b01e",
+      "change": "no change",
+      "status": "success"
+    },
+    {
+      "date": "2026-10-12",
+      "hash": "4540c90a23bb311ff146d2d653cafc23c1b0b01e",
+      "change": "initial sync, 699 entries parsed (454 A / 197 B / 48 C)",
+      "status": "success"
+    }
+  ]
+}

@@ -5,6 +5,20 @@
 
 # testing
 /coverage
+# Playwright 产物 (截图/报告/轨迹不进仓库; 此前未忽略, 工作区有 101 个未跟踪产物)
+/test-results/
+/playwright-report/
+/blob-report/
+/tests/screenshots/
+
+# 本地起服/排查产生的日志 (此前根目录堆了 6 个 log, 已清理)
+*.log
+/start.out.log
+/start.err.log
+
+# 一次性排查脚本与临时样本图 (不要提交到仓库根目录; 有用的话放进 scripts/ 或 tests/)
+/tmp*
+/*-new.png
 
 # next.js
 /.next/
@@ -36,13 +50,22 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# upstream submodule
+# upstream 原始 markdown —— **不入库**
+# 6.1MB / 320 个文件, 是"原料"不是构建必需品: `next build` 只读 data/*.json,
+# verify-compliance 也只检查 data/entries.json 是否存在。需要它就 `pnpm sync`。
 /content/upstream/
 
-# generated data (rebuilt by sync)
-/data/entries.json
-/data/sections.json
-/data/sync-log.json
+# 派生数据 —— **入库**(2026-10-18 决定)。理由见 README「数据从哪来」:
+#   1. clone 即用: 不联网也能 `pnpm install && pnpm build`
+#   2. 数据可回滚: 上游改坏或同步出错时可 `git checkout` 回到上一版
+#      (此前被忽略 → 数据毫无版本历史, 属审计 P0)
+#   3. 与 .github/workflows/sync.yml 的设计一致 —— 该 workflow 每天的动作就是
+#      `git add data/ && git commit && git push`; 文件被忽略时它会永远空跑
+# 体积: entries.json 2549KB → git 压缩约 895KB, 后续版本走增量 delta
+# 重新生成: `pnpm sync`(拉上游) 或 `pnpm parse`(从已有 upstream 重解析)
+# (data/*.json 不在此列即表示入库)
+
+# 历史遗留, 当前不生成; 保留以防将来重新引入
 /data/search-index.json
 
 # node version
