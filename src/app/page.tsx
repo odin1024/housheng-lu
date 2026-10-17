@@ -1,87 +1,161 @@
 import Link from 'next/link';
 import { allEntries, stats } from '@/lib/entries';
+import { allSections } from '@/lib/stats';
 import { ScrollOfLife } from '@/components/ScrollOfLife';
-import { EmergencyCard } from '@/components/Emergency';
+import { EMERGENCY_SCENARIOS } from '@/lib/emergency-scenarios';
+import { pickDaily } from '@/lib/daily-pick';
+import { evidenceLabel, ratioLabel, caliberLabel } from '@/lib/labels';
+import { LIFE_STAGES, UNIVERSAL_SECTIONS } from '@/lib/life-stages';
+
+/** 章节号 → 标题 (卡片上要写出该阶段的专属章节名) */
+const sectionTitle = new Map(allSections.map((s) => [s.id, s.title]));
 
 export default function HomePage() {
-  // 今日必做 5 条 (从 A 级随机)
-  const todayPicks = allEntries
-    .filter((e) => e.evidenceLevel === 'A' && e.cost.money === 'free')
-    .slice(0, 5);
+  const todayPicks = pickDaily(allEntries, 5);
 
-  // 急救速查
-  const emergencyEntries = [
-    { title: '心脏骤停', desc: '用力按, 5-6 cm', href: '/emergency/心脏骤停' },
-    { title: '大出血', desc: '加压止血', href: '/emergency/大出血' },
-    { title: '烧烫伤', desc: '凉水冲 20 分钟', href: '/emergency/烧烫伤' },
-    { title: '噎住', desc: '海姆立克', href: '/emergency/噎住' },
-    { title: '中暑', desc: '阴凉处降温', href: '/emergency/中暑' },
-    { title: '一氧化碳', desc: '开门窗', href: '/emergency/一氧化碳' },
-  ];
+  // JSON-LD 结构化数据
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: '厚生錄 · HouSheng Lu',
+    alternateName: '高性价比人生指南 视觉化再刊本',
+    description: '七百余条循证生活建议, 每条写明花掉什么、换回什么、证据有多硬',
+    url: 'https://housheng.lu',
+    inLanguage: 'zh-CN',
+    dateModified: new Date().toISOString(),
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://housheng.lu/explore?query={search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+    author: {
+      '@type': 'Organization',
+      name: '厚生錄 Contributors',
+      url: 'https://github.com/housheng-lu/housheng-lu',
+    },
+    sourceOrganization: {
+      '@type': 'Organization',
+      name: 'eternity4719/HowToLiveBetter',
+      url: 'https://github.com/eternity4719/HowToLiveBetter',
+    },
+    license: 'https://creativecommons.org/licenses/by/4.0/',
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        // 转义 '<' : 防止今后把动态数据放进 JSON-LD 时 </script> 逃逸成 XSS
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
+
       {/* Hero */}
       <section className="border-b border-border bg-bg-alt">
-        <div className="max-w-wide mx-auto px-4 md:px-6 py-16 md:py-24 text-center">
-          <div className="mb-6">
-            <img src="/logo/seal-square.svg" alt="厚生錄" width={96} height={96} className="mx-auto" />
+        <div className="max-w-wide mx-auto px-4 md:px-6 py-10 md:py-14 text-center">
+          <div className="mb-3 md:mb-4 flex justify-center">
+            <img
+              src="/logo/seal-end.svg"
+              alt="厚生錄"
+              width={130}
+              height={60}
+              className="md:w-[150px] md:h-[70px]"
+            />
           </div>
           <h1
-            className="text-5xl md:text-7xl font-black tracking-guo mb-4"
+            className="tracking-guo-center text-3xl sm:text-4xl md:text-7xl font-black tracking-guo mb-3 md:mb-4"
             style={{ fontFamily: 'var(--font-zh-heading)' }}
           >
             厚生錄
           </h1>
-          <p className="text-lg md:text-xl text-vermillion mb-2 tracking-guo">
-            七百条生计, 都在案头。
+          <p className="text-base md:text-xl text-vermillion mb-2 px-2">
+            七百余条生计, 都在案头。
           </p>
-          <p className="text-sm md:text-base text-ink-soft mb-8 italic" style={{ fontFamily: 'var(--font-en-heading)' }}>
+          <p
+            className="text-xs md:text-base text-ink-soft mb-5 md:mb-6 italic px-2"
+            style={{ fontFamily: 'var(--font-en-heading)' }}
+          >
             HouSheng Lu · Records of Living Well
           </p>
-          <hr className="zhu-si-lan w-32 mx-auto" />
-          <p className="text-base md:text-lg mt-4">
-            《高性价比人生指南》视觉化再刊本
-          </p>
-          <p className="text-sm text-ink-soft mt-2">
+          <hr className="zhu-si-lan w-24 md:w-32 mx-auto !my-0" />
+          <p className="text-sm md:text-lg mt-4 px-2">《高性价比人生指南》视觉化再刊本</p>
+          <p className="text-xs md:text-sm text-ink-soft mt-2 px-2">
             按 CC BY 4.0 衍生自 eternity4719/HowToLiveBetter
           </p>
 
-          <div className="flex flex-wrap justify-center gap-6 mt-8 text-sm">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-seal">{stats.totalEntries}</div>
+          <div className="flex flex-wrap justify-center gap-4 md:gap-8 mt-5 md:mt-6 text-sm px-2">
+            <div className="text-center min-w-[60px]">
+              <div className="text-xl md:text-2xl font-bold text-seal">{stats.totalEntries}</div>
               <div className="text-ink-soft text-xs tracking-guo-sm">条目</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-seal">{stats.totalSections}</div>
+            <div className="text-center min-w-[60px]">
+              <div className="text-xl md:text-2xl font-bold text-seal">{stats.totalSections}</div>
               <div className="text-ink-soft text-xs tracking-guo-sm">章节</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-seal">{stats.evidenceA}</div>
+            <div className="text-center min-w-[60px]">
+              <div className="text-xl md:text-2xl font-bold text-seal">{stats.evidenceA}</div>
               <div className="text-ink-soft text-xs tracking-guo-sm">A 级证据</div>
             </div>
+          </div>
+
+          {/* 首屏入口: 此前首屏内容区一个可点元素都没有 (实测 heroLinksInFold = 0),
+              第一次来的人不知道从哪下手 —— 补两个与定位一致的动作 */}
+          <div className="flex flex-wrap justify-center gap-3 mt-6 md:mt-7 px-2 text-sm">
+            <Link
+              href="/emergency"
+              className="px-5 py-2.5 border border-vermillion text-vermillion hover:bg-vermillion hover:text-bg transition-colors"
+              style={{ borderBottom: '1px solid var(--color-vermillion)' }}
+            >
+              急方 · 12 个场景（离线可用）
+            </Link>
+            <Link
+              href="/matrix"
+              prefetch={false}
+              className="px-5 py-2.5 border border-seal text-seal hover:bg-seal hover:text-bg transition-colors"
+              style={{ borderBottom: '1px solid var(--color-seal)' }}
+            >
+              若只做八件事
+            </Link>
+            <Link
+              href="/explore"
+              prefetch={false}
+              className="px-2 py-2.5 text-ink-soft underline underline-offset-4 decoration-border hover:text-vermillion hover:decoration-vermillion transition-colors"
+            >
+              浏览全部 {stats.totalEntries} 条
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* 长卷 */}
+      {/* 长卷 - 整个 server 渲染, 0 client JS */}
       <ScrollOfLife />
 
-      {/* 双栏: 急救 + 今日 */}
+      {/* 急救 + 今日必做 */}
       <section className="max-w-wide mx-auto px-4 md:px-6 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* 急救速查 */}
           <div className="md:col-span-1">
             <h2 className="title-juanmu-sub text-left mb-4">急方</h2>
-            <div className="space-y-3">
-              {emergencyEntries.map((e) => (
-                <EmergencyCard key={e.title} title={e.title} description={e.desc} href={e.href} />
+            <ul className="space-y-3" aria-label="急救场景">
+              {EMERGENCY_SCENARIOS.map((s) => (
+                <li key={s.slug}>
+                  <Link
+                    href={`/emergency/${encodeURIComponent(s.slug)}`}
+                    className="block py-4 px-5 border border-vermillion text-center bg-bg hover:bg-vermillion hover:text-bg transition-all no-underline"
+                  >
+                    <div
+                      className="text-2xl font-bold tracking-guo"
+                      style={{ fontFamily: 'var(--font-zh-heading)' }}
+                    >
+                      {s.title}
+                    </div>
+                    {s.desc && <div className="text-xs mt-1 opacity-80">{s.desc}</div>}
+                  </Link>
+                </li>
               ))}
-            </div>
+            </ul>
             <Link
               href="/emergency"
-              className="block mt-4 text-center py-3 text-sm border border-vermillion text-vermillion hover:bg-vermillion hover:text-bg"
-              style={{ borderBottom: '1px solid var(--color-vermillion)' }}
+              className="block mt-4 text-center py-3 text-sm border border-vermillion text-vermillion hover:bg-vermillion hover:text-bg no-underline"
             >
               ▣ 进急方卷
             </Link>
@@ -89,27 +163,35 @@ export default function HomePage() {
 
           {/* 今日必做 */}
           <div className="md:col-span-2">
-            <h2 className="title-juanmu-sub text-left mb-4">今日必做</h2>
+            <h2 className="title-juanmu-sub text-left mb-4">
+              {/* 首页是 SSG: pickDaily 在构建时求值, 不会"每日"变 → 文案据实改为"随构建刷新" */}
+              今日必做 <span className="text-ink-soft text-sm">(随构建刷新)</span>
+            </h2>
             <div className="space-y-3">
               {todayPicks.map((entry, i) => (
                 <Link
                   key={entry.id}
                   href={`/book/${entry.id}`}
-                  className="block py-3 border-b border-border hover:bg-bg-alt transition-colors"
-                  style={{ borderBottom: '1px solid var(--color-border)', textDecoration: 'none' }}
+                  className="block py-3 border-b border-border hover:bg-bg-alt transition-colors no-underline"
                 >
-                  <div className="flex items-baseline gap-3">
-                    <span className="text-seal font-bold text-lg" style={{ fontFamily: 'var(--font-mono)' }}>
+                  <div className="flex items-baseline gap-2 flex-wrap">
+                    <span
+                      className="text-seal font-bold text-base md:text-lg flex-shrink-0"
+                      style={{ fontFamily: 'var(--font-mono)' }}
+                    >
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <span className="font-bold" style={{ fontFamily: 'var(--font-zh-heading)' }}>
+                    <span
+                      className="font-bold text-sm md:text-base flex-1 min-w-0"
+                      style={{ fontFamily: 'var(--font-zh-heading)' }}
+                    >
                       {entry.title}
                     </span>
-                    <span className="text-xs text-ink-soft ml-auto">
-                      A · {entry.caliber}
+                    <span className="text-xs text-ink-soft flex-shrink-0">
+                      {entry.evidenceLevel} · {caliberLabel[entry.caliber]}
                     </span>
                   </div>
-                  <div className="text-sm text-ink-soft mt-1 ml-8 leading-relaxed">
+                  <div className="text-xs md:text-sm text-ink-soft mt-1 ml-7 md:ml-8 leading-relaxed">
                     {entry.plainLanguage.slice(0, 60)}
                     {entry.plainLanguage.length > 60 ? '...' : ''}
                   </div>
@@ -122,34 +204,49 @@ export default function HomePage() {
 
       {/* 人生阶段入口 */}
       <section className="max-w-wide mx-auto px-4 md:px-6 py-12 border-t border-border">
-        <h2 className="title-juanmu-sub mb-8">人生阶段</h2>
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {[
-            { stage: '高中生', icon: '☉' },
-            { stage: '大学生', icon: '☉' },
-            { stage: '刚工作', icon: '☉' },
-            { stage: '中年', icon: '☉' },
-            { stage: '退休前后', icon: '☉' },
-          ].map((s) => (
+        <h2 className="title-juanmu-sub mb-2">人生阶段</h2>
+        {/* 说明口径: 否则读者会拿各卡片章节数相加(45)去对原书 34 章, 以为映射错了 */}
+        <p className="text-xs text-ink-soft text-center mb-6 md:mb-8 leading-relaxed">
+          {UNIVERSAL_SECTIONS.length} 个通用章节（不分年龄都适用）已计入每个阶段；
+          各阶段另有专属章节，两者相加恰好是原书 34 章，不重不漏。
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 md:gap-4">
+          {Object.entries(LIFE_STAGES).map(([key, s]) => (
             <Link
-              key={s.stage}
-              href={`/explore?stage=${encodeURIComponent(s.stage)}`}
-              className="block p-6 border border-border text-center hover:border-vermillion hover:bg-bg-alt transition-all"
-              style={{ borderBottom: '1px solid var(--color-border)', textDecoration: 'none' }}
+              key={key}
+              href={`/explore?stage=${encodeURIComponent(key)}`}
+              // /explore 会带上全部 765 条数据 (约 2.4MB raw / 890KB gzip),
+              // 首页任一入口都不预取它 —— 宁可点击后多等一点, 也不要让每个访客白下 890KB
+              prefetch={false}
+              title={`专属章节: 第 ${s.own.join('、')} 章`}
+              className="block p-4 md:p-6 border border-border text-center hover:border-vermillion hover:bg-bg-alt transition-all no-underline"
             >
-              <div className="text-4xl text-seal mb-2">{s.icon}</div>
-              <div className="text-base font-bold tracking-guo-sm" style={{ fontFamily: 'var(--font-zh-heading)' }}>
-                {s.stage}
+              <div className="text-3xl md:text-4xl text-seal mb-1 md:mb-2">☉</div>
+              <div
+                className="text-sm md:text-base font-bold tracking-guo-sm"
+                style={{ fontFamily: 'var(--font-zh-heading)' }}
+              >
+                {s.label}
+              </div>
+              <div className="text-xs text-ink-soft mt-1">
+                专属 {s.own.length} 章
+              </div>
+              {/* 写出专属章节名: 否则「婴幼儿」和「上学以后」都是"专属 1 章 + 通用 9 章", 看不出区别 */}
+              <div className="text-[11px] text-ink-soft mt-0.5 truncate" title={s.own.map((n) => sectionTitle.get(n) ?? '').join(' · ')}>
+                {s.own
+                  .map((n) => sectionTitle.get(n))
+                  .filter(Boolean)
+                  .join(' · ')}
+              </div>
+              <div className="text-[11px] text-ink-soft mt-0.5">
+                + 通用 {UNIVERSAL_SECTIONS.length} 章
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* 卷末 */}
-      <div className="juan-end">
-        〔 厚生錄 · 卷端 〕
-      </div>
+      <div className="juan-end">〔 厚生錄 · 卷端 〕</div>
     </>
   );
 }

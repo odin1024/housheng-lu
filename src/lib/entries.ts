@@ -1,47 +1,40 @@
 import entriesData from '@data/entries.json';
-import sectionsData from '@data/sections.json';
-import statsData from '@data/stats.json';
-import type { Entry, Section, Stats } from '@/types';
+import type { Entry } from '@/types';
+import { allSections, stats } from './stats';
+import { priority } from './priority';
 
-export const allEntries = entriesData as unknown as Entry[];
-export const allSections = sectionsData as unknown as Section[];
-export const stats = statsData as unknown as Stats;
+// stats / allSections 现在住在轻量模块 lib/stats.ts;
+// 这里再导出一次是为了服务端旧引用不必全改, 客户端请直接引 @/lib/stats
+export { allSections, stats };
+
+/**
+ * 数据读入时做两处校正 (数据文件里的字段是解析脚本的默认值, 不能直接用):
+ *
+ * 1. caliber (口径): 原书没有逐条口径, 但**章节**有明确口径
+ *    (sections.json: life 11 / money 13 / time 3 / freedom 7)
+ *    解析脚本早期把每条硬编码成 'life', 导致"口径"筛选形同虚设 → 这里按章节回填
+ *
+ * 2. ratio (性价比): 原书没有这个字段, 解析脚本填的是 'normal'
+ *    → 改为用 priority() 折算, 并标注为"本站派生"(见 lib/priority.ts)
+ *
+ * benefitMagnitude 原书同样没有, 保留字段但不再用于展示 (见 /matrix 页面说明)
+ */
+const caliberOf = new Map(allSections.map((s) => [s.id, s.caliber]));
+
+export const allEntries: Entry[] = (entriesData as unknown as Entry[]).map((e) => {
+  const caliber = caliberOf.get(e.section) ?? e.caliber;
+  const next: Entry = { ...e, caliber };
+  next.ratio = priority(next);
+  return next;
+});
+
+// 性能: 建 id 索引, 避免每次 allEntries.find
+const entryIndex = new Map<string, Entry>(allEntries.map((e) => [e.id, e]));
 
 export function getEntryById(id: string): Entry | undefined {
-  return allEntries.find((e) => e.id === id);
+  return entryIndex.get(id);
 }
 
 export function getEntriesBySection(sectionNum: number): Entry[] {
   return allEntries.filter((e) => e.section === sectionNum);
-}
-
-export function getEntriesByCaliber(caliber: string): Entry[] {
-  return allEntries.filter((e) => e.caliber === caliber);
-}
-
-export function getTopEntries(limit = 50): Entry[] {
-  // 优先 A 级 + 极高
-  return allEntries
-    .filter((e) => e.evidenceLevel === 'A')
-    .slice(0, limit);
-}
-
-export function getEmergencyEntries(): Entry[] {
-  return allEntries.filter((e) => e.section === 13);
-}
-
-export function getRelatedEntries(entry: Entry): Entry[] {
-  return entry.remark
-    ?.split(/[,，、]/)
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .map((s) => {
-      const m = s.match(/第\s*(\d+)\s*节/);
-      if (m) {
-        return allEntries.filter((e) => e.section === parseInt(m[1], 10)).slice(0, 3);
-      }
-      return [];
-    })
-    .flat()
-    .slice(0, 5) ?? [];
 }

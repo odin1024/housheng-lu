@@ -1,21 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+<!-- 厚生錄 主 logo - V2 竖排朱印 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140" preserveAspectRatio="xMidYMid meet">
   <defs>
     <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
       <feDisplacementMap in="SourceGraphic" scale="1.5"/>
     </filter>
     <filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="5"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="9"/>
       <feDisplacementMap in="SourceGraphic" scale="0.8"/>
     </filter>
   </defs>
-  <rect x="6" y="6" width="84" height="84"
-        fill="none" stroke="#B73229" stroke-width="3"
-        filter="url(#rough)"/>
-  <g filter="url(#ink)" font-family="'LXGW WenKai TC', 'Songti SC', serif" font-weight="900" fill="#B73229">
-    <text x="48" y="40" text-anchor="middle" font-size="22">厚</text>
-    <text x="30" y="64" text-anchor="middle" font-size="22">生</text>
-    <text x="66" y="64" text-anchor="middle" font-size="22">錄</text>
+  <!-- 外框: 长方形 + 圆角, 更像古印 -->
+  <rect x="6" y="6" width="88" height="128" rx="4"
+        fill="none" stroke="#B73229" stroke-width="3" filter="url(#rough)"/>
+  <!-- 顶部装饰: 小方块 -->
+  <rect x="46" y="14" width="8" height="8" fill="#B73229" opacity="0.6"/>
+  <!-- 文字: 竖排均匀分布 -->
+  <g filter="url(#ink)" font-family="'LXGW WenKai TC', 'Songti SC', serif"
+     font-weight="900" fill="#B73229" text-anchor="middle">
+    <text x="50" y="50" font-size="32">厚</text>
+    <text x="50" y="85" font-size="32">生</text>
+    <text x="50" y="120" font-size="32">錄</text>
   </g>
+  <!-- 底部装饰 -->
+  <rect x="46" y="122" width="8" height="8" fill="#B73229" opacity="0.6"/>
 </svg>

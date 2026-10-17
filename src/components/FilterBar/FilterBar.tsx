@@ -1,15 +1,81 @@
 'use client';
 
-import { useState } from 'react';
 import type { Filter, Section } from '@/types';
 
 interface FilterBarProps {
   sections: Section[];
   filter: Filter;
   onChange: (filter: Filter) => void;
+  /**
+   * 阶段页专用: 该阶段**专属**章节 id。
+   *
+   * 为什么需要: 通用章节(9 个)会加进每个阶段, 于是各阶段侧栏的勾选形态几乎一样
+   * (实测婴幼儿与上学以后都是"章节 (10)", 首屏勾选形态完全相同, 差异在屏幕外) ——
+   * 读者看不出阶段之间的区别。故把专属章节**置顶单列一组**并打标签。
+   */
+  ownSections?: number[];
+  /** 通用章节 id (只有阶段页需要, 用于给它们打「通用」标签) */
+  universalSections?: number[];
 }
 
-export function FilterBar({ sections, filter, onChange }: FilterBarProps) {
+const RATIO_OPTIONS = [
+  { v: 'extreme', l: '极高' },
+  { v: 'high', l: '高' },
+  { v: 'normal', l: '一般' },
+] as const;
+
+const CALIBER_OPTIONS = [
+  { v: 'life', l: '寿命' },
+  { v: 'money', l: '金钱' },
+  { v: 'time', l: '时间精力' },
+  { v: 'freedom', l: '人身自由' },
+] as const;
+
+const EVIDENCE_OPTIONS = ['A', 'B', 'C'] as const;
+
+const COST_MONEY = [
+  { v: 'free', l: '不花钱' },
+  { v: 'low', l: '少' },
+  { v: 'medium', l: '中' },
+  { v: 'high', l: '多' },
+] as const;
+
+const COST_TIME = [
+  { v: 'instant', l: '顺手' },
+  { v: 'hours', l: '几小时' },
+  { v: 'daily', l: '每天' },
+] as const;
+
+const COST_WILL = [
+  { v: 'none', l: '不用' },
+  { v: 'some', l: '一点' },
+  { v: 'high', l: '很多' },
+] as const;
+
+export function FilterBar({ sections, filter, onChange, ownSections, universalSections }: FilterBarProps) {
+  const own = ownSections ?? [];
+  const universal = universalSections ?? [];
+  const ownSet = new Set(own);
+  const universalSet = new Set(universal);
+
+  const chapterRow = (s: Section) => {
+    const isOwn = ownSet.has(s.id);
+    const isUniversal = universalSet.has(s.id);
+    return (
+      <FilterCheckbox
+        key={s.id}
+        label={`${s.number}. ${s.title}`}
+        title={`${s.number}. ${s.title} · ${s.entryCount} 条${
+          isOwn ? ' · 本阶段专属' : isUniversal ? ' · 不分年龄通用' : ''
+        }`}
+        checked={filter.sections.includes(s.id)}
+        onChange={() => toggle('sections', s.id)}
+        tag={isOwn ? '专属' : isUniversal ? '通用' : undefined}
+        tagStrong={isOwn}
+      />
+    );
+  };
+
   const toggle = <K extends keyof Filter>(key: K, value: any) => {
     const arr = filter[key] as any[];
     const next = arr.includes(value)
@@ -33,11 +99,28 @@ export function FilterBar({ sections, filter, onChange }: FilterBarProps) {
     });
   };
 
+  const activeCount =
+    filter.sections.length +
+    filter.ratios.length +
+    filter.calibers.length +
+    filter.evidenceLevels.length +
+    filter.costMoney.length +
+    filter.costTime.length +
+    filter.costWill.length +
+    (filter.query ? 1 : 0);
+
   return (
-    <aside className="w-full md:w-60 md:flex-shrink-0 p-6 border-r border-border bg-bg-alt overflow-y-auto">
+    <aside
+      className="w-full md:w-60 md:flex-shrink-0 p-6 border-r border-border bg-bg-alt md:sticky md:top-[64px] md:self-start md:max-h-[calc(100vh-64px)] md:overflow-y-auto md:overscroll-contain"
+      aria-label="筛选"
+    >
       <div className="mb-6">
+        <label htmlFor="filter-search" className="sr-only">
+          搜索条目
+        </label>
         <input
-          type="text"
+          id="filter-search"
+          type="search"
           value={filter.query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="检索..."
@@ -46,23 +129,24 @@ export function FilterBar({ sections, filter, onChange }: FilterBarProps) {
         />
       </div>
 
-      <FilterGroup title="章节" count={filter.sections.length}>
-        {sections.map((s) => (
-          <FilterCheckbox
-            key={s.id}
-            label={`${s.number}. ${s.title}`}
-            checked={filter.sections.includes(s.id)}
-            onChange={() => toggle('sections', s.id)}
-          />
-        ))}
-      </FilterGroup>
+      {own.length > 0 ? (
+        <>
+          {/* 阶段页: 专属章节置顶, 让"这个阶段看什么"第一眼就看到 */}
+          <FilterGroup title="本阶段专属" count={own.length}>
+            {sections.filter((s) => ownSet.has(s.id)).map(chapterRow)}
+          </FilterGroup>
+          <FilterGroup title="其余章节（含通用）" count={filter.sections.length - own.length}>
+            {sections.filter((s) => !ownSet.has(s.id)).map(chapterRow)}
+          </FilterGroup>
+        </>
+      ) : (
+        <FilterGroup title="章节" count={filter.sections.length}>
+          {sections.map(chapterRow)}
+        </FilterGroup>
+      )}
 
       <FilterGroup title="性价比" count={filter.ratios.length}>
-        {[
-          { v: 'extreme', l: '极高' },
-          { v: 'high', l: '高' },
-          { v: 'normal', l: '一般' },
-        ].map((o) => (
+        {RATIO_OPTIONS.map((o) => (
           <FilterCheckbox
             key={o.v}
             label={o.l}
@@ -73,12 +157,7 @@ export function FilterBar({ sections, filter, onChange }: FilterBarProps) {
       </FilterGroup>
 
       <FilterGroup title="换回" count={filter.calibers.length}>
-        {[
-          { v: 'life', l: '寿命' },
-          { v: 'money', l: '金钱' },
-          { v: 'time', l: '时间精力' },
-          { v: 'freedom', l: '人身自由' },
-        ].map((o) => (
+        {CALIBER_OPTIONS.map((o) => (
           <FilterCheckbox
             key={o.v}
             label={o.l}
@@ -89,7 +168,7 @@ export function FilterBar({ sections, filter, onChange }: FilterBarProps) {
       </FilterGroup>
 
       <FilterGroup title="证据等级" count={filter.evidenceLevels.length}>
-        {['A', 'B', 'C'].map((v) => (
+        {EVIDENCE_OPTIONS.map((v) => (
           <FilterCheckbox
             key={v}
             label={`${v} 级`}
@@ -101,12 +180,7 @@ export function FilterBar({ sections, filter, onChange }: FilterBarProps) {
 
       <FilterGroup title="成本">
         <FilterSubGroup label="金钱">
-          {[
-            { v: 'free', l: '不花钱' },
-            { v: 'low', l: '少' },
-            { v: 'medium', l: '中' },
-            { v: 'high', l: '多' },
-          ].map((o) => (
+          {COST_MONEY.map((o) => (
             <FilterCheckbox
               key={o.v}
               label={o.l}
@@ -115,13 +189,8 @@ export function FilterBar({ sections, filter, onChange }: FilterBarProps) {
             />
           ))}
         </FilterSubGroup>
-
         <FilterSubGroup label="时间">
-          {[
-            { v: 'instant', l: '顺手' },
-            { v: 'hours', l: '几小时' },
-            { v: 'daily', l: '每天' },
-          ].map((o) => (
+          {COST_TIME.map((o) => (
             <FilterCheckbox
               key={o.v}
               label={o.l}
@@ -130,13 +199,8 @@ export function FilterBar({ sections, filter, onChange }: FilterBarProps) {
             />
           ))}
         </FilterSubGroup>
-
         <FilterSubGroup label="毅力">
-          {[
-            { v: 'none', l: '不用' },
-            { v: 'some', l: '一点' },
-            { v: 'high', l: '很多' },
-          ].map((o) => (
+          {COST_WILL.map((o) => (
             <FilterCheckbox
               key={o.v}
               label={o.l}
@@ -149,16 +213,24 @@ export function FilterBar({ sections, filter, onChange }: FilterBarProps) {
 
       <button
         onClick={clear}
-        className="w-full mt-4 py-2 text-sm text-ink-soft border border-border hover:border-vermillion hover:text-vermillion bg-transparent"
-        style={{ borderBottom: '1px solid var(--color-border)' }}
+        disabled={activeCount === 0}
+        className="w-full mt-4 py-2 text-sm border border-border hover:border-vermillion hover:text-vermillion disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        清空筛选
+        清空筛选 {activeCount > 0 && `(${activeCount})`}
       </button>
     </aside>
   );
 }
 
-function FilterGroup({ title, count, children }: { title: string; count?: number; children: React.ReactNode }) {
+function FilterGroup({
+  title,
+  count,
+  children,
+}: {
+  title: string;
+  count?: number;
+  children: React.ReactNode;
+}) {
   return (
     <div className="mb-6">
       <h3 className="text-sm text-ink-soft tracking-guo-sm mb-3 flex items-center justify-between">
@@ -181,16 +253,43 @@ function FilterSubGroup({ label, children }: { label: string; children: React.Re
   );
 }
 
-function FilterCheckbox({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
+function FilterCheckbox({
+  label,
+  title,
+  checked,
+  onChange,
+  tag,
+  tagStrong,
+}: {
+  label: string;
+  title?: string;
+  checked: boolean;
+  onChange: () => void;
+  /** 「专属」/「通用」小标签: 让读者一眼看出该章与当前阶段的关系 */
+  tag?: string;
+  tagStrong?: boolean;
+}) {
   return (
-    <label className="flex items-center gap-2 cursor-pointer text-sm hover:text-vermillion">
+    <label
+      className="flex items-center gap-2 cursor-pointer text-sm hover:text-vermillion truncate"
+      title={title || label}
+    >
       <input
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="accent-seal"
+        className="accent-seal flex-shrink-0"
       />
-      <span>{label}</span>
+      <span className="truncate">{label}</span>
+      {tag && (
+        <span
+          className={`flex-shrink-0 text-[10px] px-1 border ${
+            tagStrong ? 'border-seal text-seal' : 'border-border text-ink-soft'
+          }`}
+        >
+          {tag}
+        </span>
+      )}
     </label>
   );
 }

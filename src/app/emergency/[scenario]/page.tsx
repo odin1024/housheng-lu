@@ -1,80 +1,31 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { EMERGENCY_SCENARIOS, getScenarioBySlug } from '@/lib/emergency-scenarios';
 
-const SCENARIOS: Record<string, { title: string; steps: Array<{ n: string; text: string }>; source: string }> = {
-  '心脏骤停': {
-    title: '心脏骤停',
-    steps: [
-      { n: '一', text: '确认无反应, 无呼吸' },
-      { n: '二', text: '叫人打 120, 取 AED' },
-      { n: '三', text: '用力按, 5-6 cm, 100-120 次/分' },
-      { n: '四', text: '不要停, 有人接替再换' },
-    ],
-    source: 'NEJM 2024 · 中国多中心 · 38,227 例院外心脏骤停',
-  },
-  '大出血': {
-    title: '大出血',
-    steps: [
-      { n: '一', text: '戴手套或用塑料袋代替' },
-      { n: '二', text: '直接加压, 用干净布料' },
-      { n: '三', text: '抬高出血部位高于心脏' },
-      { n: '四', text: '持续按压, 等救护车' },
-    ],
-    source: '《急诊医学》第 5 版',
-  },
-  '烧烫伤': {
-    title: '烧烫伤',
-    steps: [
-      { n: '一', text: '凉水冲 20 分钟, 不是冰水' },
-      { n: '二', text: '脱掉非粘连衣物' },
-      { n: '三', text: '盖干净纱布, 不要抹油' },
-      { n: '四', text: '大面积立即送医' },
-    ],
-    source: '中华医学会烧伤外科指南 2023',
-  },
-  '噎住': {
-    title: '噎住',
-    steps: [
-      { n: '一', text: '鼓励咳嗽, 不要拍背' },
-      { n: '二', text: '咳不出: 海姆立克法' },
-      { n: '三', text: '站在身后, 双手抱肚脐上方' },
-      { n: '四', text: '用力向内向上冲击, 直到吐出' },
-    ],
-    source: '《红十字急救手册》',
-  },
-  '中暑': {
-    title: '中暑',
-    steps: [
-      { n: '一', text: '移至阴凉处' },
-      { n: '二', text: '脱多余衣物' },
-      { n: '三', text: '凉水擦身, 风扇吹' },
-      { n: '四', text: '意识不清立即送医' },
-    ],
-    source: '中国疾控中心 2022',
-  },
-  '一氧化碳': {
-    title: '一氧化碳中毒',
-    steps: [
-      { n: '一', text: '开门窗, 切勿开火' },
-      { n: '二', text: '把患者移到通风处' },
-      { n: '三', text: '松开衣领, 侧卧防误吸' },
-      { n: '四', text: '拨打 120, 立即送有高压氧舱的医院' },
-    ],
-    source: '中华急诊医学杂志 2021',
-  },
-};
-
+// 必须返回**未编码**的原始 slug: Next 会先解码 URL 段再匹配 params,
+// 若这里返回 encodeURIComponent(slug), 生成的参数与匹配值不一致
+// → 配合 dynamicParams=false 时预取请求会永远挂住 (实测 12 个 ?_rsc= 全部不返回,
+//   导致 /emergency 永远到不了 network-idle)
 export function generateStaticParams() {
-  return Object.keys(SCENARIOS).map((scenario) => ({ scenario }));
+  return EMERGENCY_SCENARIOS.map((s) => ({ scenario: s.slug }));
 }
 
+// 只允许已生成的场景 (见 lib/emergency-scenarios.ts), 其余真 404:
+// 否则根级 loading.tsx 会先以 200 冲刷, notFound() 变成软 404 (审计发现)
+export const dynamicParams = false;
+
 export default function EmergencyScenarioPage({ params }: { params: { scenario: string } }) {
-  const decoded = decodeURIComponent(params.scenario);
-  const data = SCENARIOS[decoded];
+  let decoded = params.scenario;
+  try {
+    decoded = decodeURIComponent(params.scenario);
+  } catch {
+    notFound(); // 畸形百分号编码 (如 '%E0%A4') 不应抛 URIError
+  }
+  const data = getScenarioBySlug(decoded);
   if (!data) notFound();
 
   return (
-    <div className="dark-mode min-h-[calc(100vh-200px)]">
+    <div className="min-h-[calc(100vh-200px)]">
       <div className="max-w-narrow mx-auto px-4 py-6">
         <nav className="mb-6">
           <Link
@@ -86,24 +37,29 @@ export default function EmergencyScenarioPage({ params }: { params: { scenario: 
           </Link>
         </nav>
 
-        <div className="text-center mb-8">
-          <div className="text-seal text-5xl mb-2" style={{ fontFamily: 'var(--font-zh-heading)' }}>
-            〔 {data.title} 〕
-          </div>
-        </div>
+        <h1
+          className="text-center text-seal text-5xl mb-8"
+          style={{ fontFamily: 'var(--font-zh-heading)' }}
+        >
+          〔 {data.title} 〕
+        </h1>
 
-        <div className="space-y-6">
+        {/* 急救步骤用有序列表: 屏幕阅读器能播报"第 N 步, 共 M 步", 视觉上也天然有序 */}
+        <ol className="space-y-6 list-none p-0 m-0">
           {data.steps.map((step) => (
-            <div key={step.n} className="border-l-2 border-seal pl-4">
-              <div className="text-seal text-2xl font-bold mb-1" style={{ fontFamily: 'var(--font-zh-heading)' }}>
+            <li key={step.n} className="border-l-2 border-seal pl-4">
+              <h2
+                className="text-seal text-2xl font-bold mb-1"
+                style={{ fontFamily: 'var(--font-zh-heading)' }}
+              >
                 〔 {step.n} 〕
-              </div>
-              <div className="text-xl leading-relaxed" style={{ fontFamily: 'var(--font-zh-body)' }}>
+              </h2>
+              <p className="text-xl leading-relaxed m-0" style={{ fontFamily: 'var(--font-zh-body)' }}>
                 {step.text}
-              </div>
-            </div>
+              </p>
+            </li>
           ))}
-        </div>
+        </ol>
 
         <hr className="zhu-si-lan" />
 

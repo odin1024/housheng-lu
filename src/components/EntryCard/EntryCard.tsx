@@ -1,44 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Entry } from '@/types';
-import { Seal } from '@/components/Seal';
-import { addToMyList, removeFromMyList, isInMyList, updateMyListStatus } from '@/lib/storage';
+import { addToMyList, removeFromMyList, isInMyList, updateMyListStatus, subscribeMyList } from '@/lib/storage';
+import { evidenceLabel, ratioLabel, caliberLabel } from '@/lib/labels';
+import { create as toast } from '@/lib/toast-store';
 
 interface EntryCardProps {
   entry: Entry;
   expanded?: boolean;
   onToggle?: () => void;
   showSeal?: boolean;
+  /** 详情页单条展示: "说人话"放大成引文 (仍左对齐) */
+  lead?: boolean;
 }
 
-const evidenceLabel: Record<string, string> = {
-  A: 'A 级',
-  B: 'B 级',
-  C: 'C 级',
-};
-
-const ratioLabel: Record<string, string> = {
-  extreme: '极高',
-  high: '高',
-  normal: '一般',
-};
-
-const caliberLabel: Record<string, string> = {
-  life: '寿命',
-  money: '金钱',
-  time: '时间精力',
-  freedom: '人身自由',
-};
-
-export function EntryCard({ entry, expanded: controlledExpanded, onToggle, showSeal = true }: EntryCardProps) {
+export function EntryCard({
+  entry,
+  expanded: controlledExpanded,
+  onToggle,
+  showSeal = true,
+  lead = false,
+}: EntryCardProps) {
   const [internalExpanded, setInternalExpanded] = useState(false);
   const expanded = controlledExpanded ?? internalExpanded;
   const [inList, setInList] = useState(false);
 
-  if (typeof window !== 'undefined') {
+  useEffect(() => {
     setInList(isInMyList(entry.id));
-  }
+    return subscribeMyList(() => setInList(isInMyList(entry.id)));
+  }, [entry.id]);
 
   const toggle = () => {
     if (onToggle) onToggle();
@@ -50,39 +41,56 @@ export function EntryCard({ entry, expanded: controlledExpanded, onToggle, showS
     if (inList) {
       removeFromMyList(entry.id);
       setInList(false);
+      toast.show('已移出');
     } else {
       addToMyList(entry.id, 'todo');
       setInList(true);
+      toast.show('已藏');
     }
   };
 
   const handleDone = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!inList) addToMyList(entry.id, 'done');
-    else updateMyListStatus(entry.id, 'done');
+    updateMyListStatus(entry.id, 'done');
     setInList(true);
+    toast.show('已勾选');
   };
 
-  const handleShare = (e: React.MouseEvent) => {
+  const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
     const url = `${window.location.origin}/book/${entry.id}`;
     const text = `${entry.title}\n\n${entry.plainLanguage}\n\n来源: 厚生錄 (${url})`;
-    if (navigator.share) {
-      navigator.share({ title: entry.title, text, url });
-    } else {
-      navigator.clipboard.writeText(text);
-      alert('已誊录到剪贴板');
+    try {
+      if (typeof navigator.share === 'function' && typeof navigator.canShare === 'function' && navigator.canShare({ title: entry.title })) {
+        await navigator.share({ title: entry.title, text, url });
+        return;
+      }
+    } catch {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.show('已誊录到剪贴板');
+    } catch {
+      toast.show('复制失败, 请手动操作');
     }
   };
 
   return (
     <article
-      className="border-b border-border py-6 transition-all duration-200"
+      className="entry-card border-b border-border px-4 md:px-6 py-6 transition-all duration-200"
       style={{ background: expanded ? 'var(--color-bg-alt)' : 'transparent' }}
     >
-      {/* 顶栏 */}
       <div className="flex items-center gap-2 flex-wrap mb-3">
-        {showSeal && <Seal text={entry.id} size={28} state={inList ? 'done' : 'default'} />}
+        {showSeal && (
+          <span
+            className={`seal ${inList ? 'seal-active' : ''}`}
+            style={{ minWidth: '40px', padding: '0 6px', height: '24px', fontSize: '11px', whiteSpace: 'nowrap' }}
+            aria-label={inList ? `已收藏 ${entry.id}` : `条目 ${entry.id}`}
+          >
+            {entry.id}
+          </span>
+        )}
         <span className="text-xs px-2 py-0.5 border border-vermillion text-vermillion">
           {evidenceLabel[entry.evidenceLevel]}
         </span>
@@ -97,100 +105,75 @@ export function EntryCard({ entry, expanded: controlledExpanded, onToggle, showS
         </span>
       </div>
 
-      {/* 标题 */}
       <h3
         className="text-xl font-bold mb-3 cursor-pointer"
         onClick={toggle}
+        onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), toggle())}
+        tabIndex={0}
+        role="button"
+        aria-expanded={expanded}
         style={{ fontFamily: 'var(--font-zh-heading)' }}
       >
         {entry.title}
       </h3>
 
-      {/* 说人话块 */}
-      <div className="plain-language">
+      <div className={lead ? 'plain-language plain-language--lead' : 'plain-language'}>
         {entry.plainLanguage}
       </div>
 
-      {/* 展开层 */}
       {expanded && (
         <div className="mt-4 space-y-4">
           <div>
             <div className="field-label">收 益</div>
             <p className="text-base whitespace-pre-wrap">{entry.benefit}</p>
           </div>
-
           <div>
             <div className="field-label">成 本</div>
             <p className="text-base">{entry.cost.detail}</p>
           </div>
-
           <div>
             <div className="field-label">证 据</div>
             <p className="text-base">
               {evidenceLabel[entry.evidenceLevel]}
               {entry.evidenceDetail && ` · ${entry.evidenceDetail}`}
-              {entry.controversy && (
-                <span className="text-vermillion ml-2">· 争议</span>
-              )}
+              {entry.controversy && <span className="text-vermillion ml-2">· 争议</span>}
             </p>
           </div>
-
           {entry.remark && (
             <div>
               <div className="field-label">备 注</div>
               <p className="text-sm whitespace-pre-wrap">{entry.remark}</p>
             </div>
           )}
-
           <div>
             <div className="field-label">出 处</div>
-            <p className="text-sm font-mono">
+            <p className="text-sm font-mono break-all">
               {entry.source}
               {entry.sourceUrl && (
                 <>
                   {' · '}
-                  <a href={entry.sourceUrl} target="_blank" rel="noopener">
+                  <a href={entry.sourceUrl} target="_blank" rel="noopener noreferrer">
                     原文 ↗
                   </a>
                 </>
               )}
             </p>
           </div>
-
-          <div className="text-xs text-ink-soft">
-            同步日期 · {entry.syncDate}
-          </div>
+          <div className="text-xs text-ink-soft">同步日期 · {entry.syncDate}</div>
         </div>
       )}
 
-      {/* 动作栏 */}
-      <div className="flex items-center gap-4 mt-4 text-sm">
-        <button
-          onClick={toggle}
-          className="text-indigo hover:text-vermillion bg-transparent border-none"
-          style={{ borderBottom: 'none' }}
-        >
+      <div className="flex items-center gap-4 mt-4 text-sm" role="toolbar" aria-label="条目操作">
+        <button onClick={toggle} aria-pressed={expanded}>
           {expanded ? '▲ 收起' : '▶ 卷开'}
         </button>
-        <button
-          onClick={handleSave}
-          className="text-ink-soft hover:text-seal bg-transparent border-none"
-          style={{ borderBottom: 'none' }}
-        >
+        <button onClick={handleSave} aria-pressed={inList}>
           {inList ? '已藏' : '藏'}
         </button>
-        <button
-          onClick={handleDone}
-          className="text-ink-soft hover:text-seal bg-transparent border-none"
-          style={{ borderBottom: 'none' }}
-        >
+        <button onClick={handleDone} aria-label="标记完成">
           ✓
         </button>
-        <button
-          onClick={handleShare}
-          className="text-ink-soft hover:text-vermillion bg-transparent border-none ml-auto"
-          style={{ borderBottom: 'none' }}
-        >
+        <button onClick={handleShare} className="ml-auto">
           传
         </button>
       </div>

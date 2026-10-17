@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- v6: 组合版 - 印章 + slogan 一体 200x80 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" width="200" height="80">
+  <defs>
+    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="23"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+    <filter id="ink" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" seed="29"/>
+      <feDisplacementMap in="SourceGraphic" scale="0.8"/>
+    </filter>
+  </defs>
+  <!-- 左侧方印 (80x80) -->
+  <rect x="4" y="4" width="72" height="72"
+        fill="none" stroke="#B73229" stroke-width="2.5" filter="url(#rough)"/>
+  <g filter="url(#ink)" font-family="'LXGW WenKai TC', 'Songti SC', serif"
+     font-weight="900" fill="#B73229" text-anchor="middle">
+    <text x="40" y="30" font-size="20">厚</text>
+    <text x="40" y="50" font-size="20">生</text>
+    <text x="40" y="70" font-size="20">錄</text>
+  </g>
+  <!-- 中间分隔线 (古籍竖线) -->
+  <line x1="84" y1="14" x2="84" y2="66" stroke="#B73229" stroke-width="1" opacity="0.4"/>
+  <!-- 右侧英文 -->
+  <g font-family="'EB Garamond', Georgia, serif" fill="#2A2418">
+    <text x="92" y="32" font-size="14" font-weight="600" letter-spacing="1">HouSheng Lu</text>
+    <text x="92" y="50" font-size="9" font-style="italic" fill="#6B5D4A">Records of Living Well</text>
+    <text x="92" y="70" font-size="8" fill="#8B3A3A" letter-spacing="0.5">CC BY 4.0</text>
+  </g>
+</svg>

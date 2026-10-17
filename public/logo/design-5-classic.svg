@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- v5: 古典线装 - 仿古书线装风格, 80x120 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 120" width="80" height="120">
+  <defs>
+    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="19"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.5"/>
+    </filter>
+  </defs>
+  <!-- 左侧线装孔 (古籍装订感) -->
+  <circle cx="14" cy="30" r="3" fill="#B73229" opacity="0.7"/>
+  <circle cx="14" cy="60" r="3" fill="#B73229" opacity="0.7"/>
+  <circle cx="14" cy="90" r="3" fill="#B73229" opacity="0.7"/>
+  <!-- 竖线 (古籍边线) -->
+  <line x1="22" y1="10" x2="22" y2="110" stroke="#B73229" stroke-width="1" opacity="0.4"/>
+  <!-- 外框: 圆角, 仿古书封面 -->
+  <rect x="28" y="8" width="46" height="104" rx="3"
+        fill="none" stroke="#B73229" stroke-width="2" filter="url(#rough)"/>
+  <!-- 文字: 竖排 -->
+  <g font-family="'LXGW WenKai TC', 'Songti SC', serif"
+     font-weight="900" fill="#B73229" text-anchor="middle">
+    <text x="51" y="38" font-size="22">厚</text>
+    <text x="51" y="68" font-size="22">生</text>
+    <text x="51" y="98" font-size="22">錄</text>
+  </g>
+  <!-- 右侧小批注 -->
+  <line x1="76" y1="40" x2="76" y2="80" stroke="#B73229" stroke-width="0.5" opacity="0.3"/>
+</svg>

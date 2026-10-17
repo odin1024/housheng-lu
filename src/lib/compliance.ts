@@ -9,7 +9,7 @@ export const attribution = {
   licenseUrl: 'https://creativecommons.org/licenses/by/4.0/',
   projectName: '厚生錄',
   projectNameEn: 'HouSheng Lu',
-  projectTagline: '七百条生计, 都在案头。',
+  projectTagline: '七百余条生计, 都在案头。',
   projectSubtitle: '《高性价比人生指南》视觉化再刊本',
   isOfficial: false,
   contentMayBeOutdated: true,

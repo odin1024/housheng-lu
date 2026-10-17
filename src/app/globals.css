@@ -1,8 +1,8 @@
+@import '../styles/tokens.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import '../styles/tokens.css';
 
 * {
   box-sizing: border-box;
@@ -24,26 +24,103 @@ body {
   background-attachment: fixed;
 }
 
+/* 暗色模式跟随系统 */
+@media (prefers-color-scheme: dark) {
+  html:not(.force-light) {
+    background: #1A1610;
+    color: #F2E8D5;
+  }
+}
+
 ::selection {
   background: var(--color-vermillion);
   color: var(--color-bg);
 }
 
+/* 全局链接样式 */
 a {
   color: var(--color-indigo);
   text-decoration: none;
-  border-bottom: 1px dashed var(--color-vermillion);
   transition: color var(--duration-base) var(--ease-default);
+  border-bottom: 1px dashed transparent;
 }
 
 a:hover {
   color: var(--color-vermillion);
-  border-bottom-style: solid;
+  border-bottom-color: var(--color-vermillion);
 }
 
+/* nav 内的链接不要下划线 */
+nav a,
+footer a,
+.no-underline,
+header a {
+  border-bottom: none;
+}
+
+nav a:hover,
+footer a:hover,
+header a:hover {
+  border-bottom: none;
+  color: var(--color-vermillion);
+}
+
+/* 按钮基础 + 键盘可访问 */
 button {
   font-family: inherit;
   cursor: pointer;
+  background: transparent;
+  /* ⚠️ 这里**不能**写 `border: none`:
+     浏览器会把该简写展开为 `border-style: none`, 而 Tailwind 的 `border` 工具类
+     只设 width 与 color、**不设 style** —— 于是 border-style 一直是 none,
+     按 CSS 规则"style 为 none 时 computed width 归 0"。
+     结果: 全站所有 `<button class="border border-*">` 外框按钮**都没有边框**,
+     看起来像纯文字, 读者看不出可以点 (实测「自动展卷」「保存到本机」等 computed 均为 0px)。
+     改为只归零宽度并保留 solid: 默认同样无边框, 但工具类能正常生效。 */
+  border-width: 0;
+  border-style: solid;
+  padding: 0;
+  color: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-vermillion);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* 跳过导航链接 (a11y) */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-seal);
+  color: var(--color-bg);
+  padding: 8px 16px;
+  z-index: 100;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* 屏幕阅读器专用 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* 古籍字距工具类 */
@@ -55,11 +132,45 @@ button {
   letter-spacing: 0.3em;
 }
 
-/* 朱丝栏 */
+/* 移动端字距归零 - 避免 letter-spacing + 全角标点导致单字换行 */
+@media (max-width: 640px) {
+  .tracking-guo,
+  .tracking-guo-sm {
+    letter-spacing: 0;
+  }
+}
+
+/* 居中大标题的字距补偿
+   letter-spacing 会在**末字之后**也留出同样宽度, 所以居中时"排放盒"是居中的,
+   但墨迹整体偏左半个字距 —— 首页 72px 标题实测偏左 18px。
+   用等量 padding-left (em 单位, 自动跟随字号) 抵消; 移动端字距为 0, 故一并归零。 */
+.tracking-guo-center {
+  padding-left: 0.5em;
+}
+
+@media (max-width: 640px) {
+  .tracking-guo-center {
+    padding-left: 0;
+  }
+}
+
+/* 正文段落也允许按词断行,避免在标点处强行换行 */
+.title-juanmu,
+.title-juanmu-sub,
+.tracking-guo,
+.tracking-guo-sm {
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
+/* 朱丝栏
+   注意: 必须用 margin-block 而不是 margin 简写 ——
+   简写会把 mx-auto(居中的朱丝栏) 一起覆盖成 0, 导致分隔线贴在容器左边缘
+   (首页 hero、about、ask 等处的居中分隔线都曾因此贴左) */
 .zhu-si-lan {
   border: none;
   border-top: 1px solid var(--color-vermillion);
-  margin: var(--space-6) 0;
+  margin-block: var(--space-6);
 }
 
 /* 印章基础样式 */
@@ -122,16 +233,36 @@ button {
   color: var(--color-ink-soft);
 }
 
-/* 大字说人话 */
+@media (max-width: 640px) {
+  .title-juanmu-sub {
+    letter-spacing: 0;
+    font-size: var(--text-base);
+  }
+  .title-juanmu {
+    letter-spacing: 0.05em;
+    font-size: var(--text-2xl);
+  }
+}
+
+/* 大字说人话 (正文段落)
+   段落必须左对齐: 居中会让每行起点左右跳动, 长列表里没法扫读
+   左右 padding 归零, 让正文左边界与标题左边界对齐 */
 .plain-language {
   font-family: var(--font-zh-body);
-  font-size: var(--text-lg);
-  line-height: var(--leading-loose);
-  text-align: center;
-  padding: var(--space-5);
+  font-size: var(--text-md);
+  line-height: 1.8;
+  text-align: left;
+  padding: var(--space-4) 0;
   margin: var(--space-4) 0;
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
+}
+
+/* 单条详情页: 放大成引文样式, 仍保持左对齐 */
+.plain-language--lead {
+  font-size: var(--text-lg);
+  line-height: 1.9;
+  padding: var(--space-5) 0;
 }
 
 /* 字段标签 (仿古籍夹注) */
@@ -145,18 +276,43 @@ button {
   letter-spacing: 0.3em;
 }
 
-/* 暗色模式(急救 PWA 用) */
-.dark-mode {
-  --color-bg: #1A1610;
-  --color-bg-alt: #2A2418;
-  --color-ink: #F2E8D5;
-  --color-ink-soft: #C9B894;
-  --color-border: #4A3D2A;
+/* Toast (替代 alert) */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-ink);
+  color: var(--color-bg);
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  z-index: 1000;
+  animation: toast-in 200ms var(--ease-default);
 }
 
-.dark-mode body {
-  background: var(--color-bg);
-  background-image: none;
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* 加载态: 四枚字印渐显渐隐 (全局 prefers-reduced-motion 会把它降为静态) */
+@keyframes seal-fade {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
+/* 说明: 这里原有一个 .dark-mode 工具类 (配套 .dark-mode body 的换底规则)。
+   它把变量改在页面内的 div 上, 而换底选择器 .dark-mode body 永远匹配不到
+   → 用 var(--color-ink-soft) 的文字变成浅色压在米色纸上, 实测对比度仅 1.6:1。
+   全站唯一使用点已改为与「急方」卷一致的纸色配色, 故一并删除这个失效工具类。
+   若日后要做真正的暗色急救页, 请用 html.dark + 设计 token, 不要挂在子 div 上。 */
+
+/* 检索页展开到 765 张卡片时实测 11,007 个 DOM 节点:
+   用 content-visibility 让视口外的卡片跳过布局与绘制 (零依赖, 比虚拟列表简单得多) */
+.entry-card {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 320px;
 }
 
 /* 隐藏滚动条但保留滚动 */
@@ -166,4 +322,151 @@ button {
 
 .scrollbar-hidden {
   scrollbar-width: none;
+}
+
+/* ── 长卷: 卷轴装裱 ────────────────────────────────── */
+/* 外层"四周双边"框 + 天地头, 让长卷成为一个物件而不是一条通栏丝带 */
+.scroll-frame {
+  position: relative;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  padding: 14px 0;
+  box-shadow:
+    inset 0 2px 6px rgba(107, 93, 74, 0.13),
+    0 1px 0 rgba(255, 255, 255, 0.4);
+}
+/* 内细线: 凑成古籍常见的双线边栏 */
+.scroll-frame::before,
+.scroll-frame::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-border);
+  opacity: 0.65;
+  pointer-events: none;
+}
+.scroll-frame::before {
+  top: 4px;
+}
+.scroll-frame::after {
+  bottom: 4px;
+}
+
+/* 轴头: 两端木杆, 略长于纸面 (像真正的卷轴轴杆出头) */
+.scroll-roller {
+  position: absolute;
+  top: -7px;
+  bottom: -7px;
+  width: 9px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to right,
+    #5A4E3D 0%,
+    #A08B6B 42%,
+    #C9B894 55%,
+    #6B5D4A 100%
+  );
+  box-shadow: 0 1px 5px rgba(42, 36, 24, 0.35);
+  pointer-events: none;
+  z-index: 3;
+}
+.scroll-roller--left {
+  left: -5px;
+}
+.scroll-roller--right {
+  right: -5px;
+}
+
+/* ── 长卷交互 ───────────────────────────────────────── */
+/* 拖动时的抓手 */
+.scroll-pan {
+  position: relative;
+  scroll-behavior: smooth;
+}
+.scroll-pan.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto; /* 拖动中不要平滑, 否则跟手迟钝 */
+}
+
+/* 两端渐隐: 提示"还能往这边滚"
+   底色必须用纸色 --color-bg (SVG 里画的纸面), 不是区块底色 --color-bg-alt,
+   否则框内边缘会露出一道色差 */
+.scroll-pan::before,
+.scroll-pan::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 44px;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 200ms var(--ease-default);
+}
+.scroll-pan::before {
+  left: 0;
+  background: linear-gradient(to right, var(--color-bg) 12%, transparent);
+}
+.scroll-pan::after {
+  right: 0;
+  background: linear-gradient(to left, var(--color-bg) 12%, transparent);
+}
+.scroll-pan.at-start::before {
+  opacity: 0;
+}
+.scroll-pan.at-end::after {
+  opacity: 0;
+}
+
+/* 章节吸附点 */
+.scroll-snap-point {
+  scroll-snap-align: start;
+}
+
+/* 印章: 悬停浮起 / 键盘聚焦描边 / 按下"钤"下去 */
+.seal-item {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 180ms var(--ease-default);
+}
+.seal-item rect {
+  transition: stroke-width 180ms var(--ease-default), fill 180ms var(--ease-default);
+}
+.seal-link:hover .seal-item {
+  transform: translateY(-4px) scale(1.06);
+}
+.seal-link:hover .seal-item rect {
+  stroke-width: 2.4 !important;
+}
+.seal-link:focus-visible {
+  outline: none;
+}
+.seal-link:focus-visible .seal-item rect {
+  stroke-width: 2.8 !important;
+  stroke: var(--color-seal) !important;
+}
+.seal-link:active .seal-item {
+  transform: scale(0.92);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seal-item,
+  .seal-item rect {
+    transition: none !important;
+  }
+  .scroll-pan {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 减少动效 (用户偏好) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

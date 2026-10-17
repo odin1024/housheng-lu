@@ -1,0 +1,24 @@
+{
+  "name": "厚生錄 · HouSheng Lu",
+  "short_name": "厚生錄",
+  "description": "《高性价比人生指南》视觉化再刊本",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F2E8D5",
+  "theme_color": "#B73229",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo/seal-square.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

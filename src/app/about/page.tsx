@@ -1,5 +1,14 @@
-import Link from 'next/link';
 import { attribution } from '@/lib/compliance';
+import { stats } from '@/lib/stats';
+import {
+  syncInfo,
+  upstreamCommitUrl,
+  shortHash,
+  formatBeijing,
+  syncChangeLabel,
+} from '@/lib/sync-info';
+
+const REPO = 'https://github.com/housheng-lu/housheng-lu';
 
 export const metadata = {
   title: '卷末',
@@ -25,7 +34,7 @@ export default function AboutPage() {
           的视觉化再刊本。
         </p>
         <p className="leading-loose mb-3">
-          原书以 Markdown 形式收录了 699 条循证生活建议, 每条写明成本、收益、证据等级与原始出处。
+          原书以 Markdown 形式收录了 {stats.totalEntries} 条循证生活建议 (分 {stats.totalSections} 章, 其中 A 级证据 {stats.evidenceA} 条), 每条写明成本、收益、证据等级与原始出处。
           本项目在不改动原书内容的前提下, 将其重新设计为一部可以翻阅、可以筛查、可以离线急救的现代古籍善本。
         </p>
         <p className="leading-loose">
@@ -41,17 +50,67 @@ export default function AboutPage() {
           <a href={attribution.licenseUrl} target="_blank" rel="noopener">
             {attribution.license}
           </a>{' '}
-          协议衍生, 已尽到三项义务:
+          协议衍生: 前三项是协议要求的三项义务, 第四项为本站的同步机制。
         </p>
         <ol className="leading-loose pl-6 list-decimal">
-          <li><strong>署名</strong>: 每页 footer 与每张导出图均标注"改编自 eternity4719/HowToLiveBetter"</li>
-          <li><strong>许可证</strong>: 正文采用 CC BY 4.0, 代码采用 MIT</li>
-          <li><strong>同步</strong>: 本站内容每 24 小时自动从上游仓库同步</li>
+          <li>
+            <strong>署名</strong>: 每页 footer 与每张导出图均标注&ldquo;改编自 eternity4719/HowToLiveBetter&rdquo;
+          </li>
+          <li>
+            <strong>许可证</strong>: 正文沿用上游的 CC BY 4.0 (
+            <a href={attribution.licenseUrl} target="_blank" rel="noopener">
+              许可证全文
+            </a>
+            ), 本站代码采用{' '}
+            <a href={`${REPO}/blob/main/LICENSE-CODE`} target="_blank" rel="noopener">
+              MIT
+            </a>
+          </li>
+          <li>
+            <strong>标注改动</strong>: 本站只做视觉化与检索功能, <strong>不改写原书正文</strong>;
+            解析脚本把 Markdown 转成 JSON 时逐字保留原文, 改动只发生在版式与交互层
+          </li>
+          <li>
+            <strong>同步</strong>: 每 24 小时从上游拉取一次, 详情见下方&ldquo;同步状态&rdquo;
+          </li>
         </ol>
         <p className="leading-loose mt-3 text-vermillion">
           本站为<strong>非官方衍生作品</strong>, 与原作者无合作关系。
           原书著作权归原作者所有。
         </p>
+      </section>
+
+      {/* 同步状态 - 用真实数据代替空口承诺, 让合规可被核对 */}
+      <section className="mb-12">
+        <h2 className="text-xl font-bold mb-3 tracking-guo-sm">同步状态</h2>
+        <ul className="leading-loose pl-6 list-disc mb-4">
+          <li>
+            上游版本:{' '}
+            <a href={upstreamCommitUrl(syncInfo.upstreamHash)} target="_blank" rel="noopener">
+              {shortHash(syncInfo.upstreamHash)}
+            </a>{' '}
+            (分支 {syncInfo.upstreamTag})
+          </li>
+          <li>
+            上次同步: <strong>{formatBeijing(syncInfo.lastSync)}</strong> (北京时间)
+          </li>
+          <li>
+            同步频率: 每 24 小时一次 (UTC 06:00 / 北京 14:00), 由{' '}
+            <a href={`${REPO}/blob/main/.github/workflows/sync.yml`} target="_blank" rel="noopener">
+              sync.yml
+            </a>{' '}
+            定时执行; 上游无变化时不产生提交
+          </li>
+        </ul>
+        <p className="text-sm text-ink-soft mb-2">最近记录:</p>
+        <ul className="text-sm leading-loose pl-6 list-disc text-ink-soft">
+          {syncInfo.history.slice(0, 3).map((r) => (
+            <li key={`${r.date}-${r.hash}`}>
+              {formatBeijing(r.date)} · {syncChangeLabel(r.change)} · {shortHash(r.hash)}
+              {r.status !== 'success' ? ` · ${r.status}` : ''}
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* 免责声明 */}
@@ -77,10 +136,7 @@ export default function AboutPage() {
         <ul className="leading-loose pl-6 list-disc">
           <li>Next.js 14 (App Router) + React Server Components</li>
           <li>Tailwind CSS + CSS Variables</li>
-          <li>霞鹜文楷 + EB Garamond + JetBrains Mono</li>
-          <li>Framer Motion (克制度使用)</li>
-          <li>FlexSearch (客户端搜索)</li>
-          <li>Zustand (轻量状态管理)</li>
+          <li>PWA · Service Worker · 离线缓存</li>
           <li>Cloudflare Pages (部署)</li>
         </ul>
       </section>
@@ -108,27 +164,17 @@ export default function AboutPage() {
       <section className="mb-12">
         <h2 className="text-xl font-bold mb-3 tracking-guo-sm">致谢</h2>
         <p className="leading-loose mb-2">
-          原作 · <a href={attribution.sourceUrl}>{attribution.sourceAuthor}</a>
+          原作 ·{' '}
+          <a href={attribution.sourceUrl} target="_blank" rel="noopener">
+            {attribution.sourceAuthor}
+          </a>
         </p>
         <p className="leading-loose mb-2">
           字体 · 霞鹜文楷 (LXGW WenKai, OFL 1.1)
         </p>
-        <p className="leading-loose mb-2">
-          衍生生态 ·{' '}
-          <a href="https://howtolivebetter.net">howtolivebetter.net</a>
-          {' · '}
-          <a href="https://how-to-live-better.com">how-to-live-better.com</a>
-          {' · '}
-          <a href="https://how2livebetter.net">how2livebetter.net</a>
-        </p>
       </section>
 
-      <div className="text-center my-12">
-        <Link href="/" style={{ borderBottom: 'none' }}>
-          <img src="/logo/seal-end.svg" alt="厚生錄" width={140} height={48} className="mx-auto" />
-        </Link>
-      </div>
-
+      {/* 结卷标记: 页脚已有本站钤印, 这里不再重复放印章, 避免同屏两枚相同印章 */}
       <div className="juan-end">〔 厚生錄 · 卷末 〕</div>
     </article>
   );

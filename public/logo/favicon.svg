@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 厚生錄 favicon - V2 简化方印版, 正方形适合 16-32px 极小尺寸 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <filter id="rough">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="1.2"/>
+    </filter>
+  </defs>
+  <!-- 外框: 正方形圆角 -->
+  <rect x="6" y="6" width="68" height="68" rx="3"
+        fill="none" stroke="#B73229" stroke-width="3" filter="url(#rough)"/>
+  <!-- 三个字竖排均匀分布 (适合小尺寸) -->
+  <g font-family="'LXGW WenKai TC', 'Songti SC', serif"
+     font-weight="900" fill="#B73229" text-anchor="middle">
+    <text x="40" y="28" font-size="22">厚</text>
+    <text x="40" y="48" font-size="22">生</text>
+    <text x="40" y="68" font-size="22">錄</text>
+  </g>
+</svg>
