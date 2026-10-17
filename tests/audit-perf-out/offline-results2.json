@@ -1,0 +1,22 @@
+[
+  {
+    "target": "/",
+    "error": "page.goto: net::ERR_FAILED at http://localhost:3000/"
+  },
+  {
+    "target": "/emergency",
+    "error": "page.goto: net::ERR_FAILED at http://localhost:3000/emergency"
+  },
+  {
+    "target": "/book/01-01",
+    "error": "page.goto: Navigation to \"http://localhost:3000/book/01-01\" is interrupted by another navigation to \"chrome-error://chromewebdata/\""
+  },
+  {
+    "target": "/explore",
+    "error": "page.goto: net::ERR_FAILED at http://localhost:3000/explore"
+  },
+  {
+    "target": "/ask",
+    "error": "page.goto: net::ERR_FAILED at http://localhost:3000/ask"
+  }
+]

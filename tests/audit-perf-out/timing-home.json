@@ -1,0 +1,173 @@
+{
+  "url": "/",
+  "timing": {
+    "redirect": 0,
+    "dns": 4.4000000059604645,
+    "tcp": 1.2999999970197678,
+    "tls": 0,
+    "request": 24.100000008940697,
+    "ttfb": 32.900000005960464,
+    "responseDownload": 7.5999999940395355,
+    "domInteractive": 407.09999999403954,
+    "domContentLoaded": 0.29999999701976776,
+    "domComplete": 407.5,
+    "loadEvent": 407.79999999701977,
+    "transferSize": 45767,
+    "encodedBodySize": 45467,
+    "decodedBodySize": 326396
+  },
+  "paint": [
+    {
+      "name": "first-paint",
+      "startTime": 396
+    },
+    {
+      "name": "first-contentful-paint",
+      "startTime": 396
+    }
+  ],
+  "audit": {
+    "lcp": {
+      "startTime": 396,
+      "renderTime": 396,
+      "loadTime": 0,
+      "size": 30780,
+      "url": "",
+      "element": "H1.text-3xl sm:text-4xl md:text-7xl font-black tracking-guo mb-3 md:mb-4"
+    },
+    "cls": 0,
+    "clsEntries": [],
+    "shifts": [],
+    "longtasks": []
+  },
+  "dom": {
+    "totalNodes": 1216,
+    "svg": 1,
+    "svgInner": 750,
+    "path": 0,
+    "rect": 137,
+    "text": 306,
+    "g": 136,
+    "a": 176,
+    "img": 3,
+    "buttons": 36
+  },
+  "resourceTotals": {
+    "count": 46,
+    "transfer": 1120965,
+    "decoded": 3530702
+  },
+  "byType": {
+    "link": {
+      "count": 4,
+      "transfer": 10374,
+      "decoded": 29989
+    },
+    "script": {
+      "count": 14,
+      "transfer": 1037375,
+      "decoded": 2890363
+    },
+    "fetch": {
+      "count": 28,
+      "transfer": 73216,
+      "decoded": 610350
+    }
+  },
+  "jsResources": [
+    {
+      "name": "/_next/static/chunks/202-15168a2dbc648f9e.js",
+      "transfer": 913759,
+      "decoded": 2506043,
+      "dur": 312
+    },
+    {
+      "name": "/_next/static/chunks/6fbc38ef-88e47b2e128ce7a8.js",
+      "transfer": 54042,
+      "decoded": 172831,
+      "dur": 37
+    },
+    {
+      "name": "/_next/static/chunks/634-682076517e44479b.js",
+      "transfer": 31992,
+      "decoded": 123530,
+      "dur": 33
+    },
+    {
+      "name": "/_next/static/chunks/906-b8aaed4840ae749c.js",
+      "transfer": 7099,
+      "decoded": 20576,
+      "dur": 31
+    },
+    {
+      "name": "/_next/static/chunks/app/explore/page-8723447864ace575.js",
+      "transfer": 6333,
+      "decoded": 16241,
+      "dur": 61
+    },
+    {
+      "name": "/_next/static/chunks/app/poster/page-d97e646dc0790cb9.js",
+      "transfer": 5140,
+      "decoded": 12264,
+      "dur": 100
+    },
+    {
+      "name": "/_next/static/chunks/app/book/%5Bid%5D/page-0ddf08f7e5f32a18.js",
+      "transfer": 3345,
+      "decoded": 7233,
+      "dur": 57
+    },
+    {
+      "name": "/_next/static/chunks/app/my/page-c7c9300ab7368d3a.js",
+      "transfer": 3151,
+      "decoded": 6893,
+      "dur": 72
+    },
+    {
+      "name": "/_next/static/chunks/app/ask/page-5cb2654e9f5b2734.js",
+      "transfer": 3111,
+      "decoded": 6298,
+      "dur": 87
+    },
+    {
+      "name": "/_next/static/chunks/app/page-8044ae67a8d72e99.js",
+      "transfer": 2831,
+      "decoded": 5804,
+      "dur": 31
+    },
+    {
+      "name": "/_next/static/chunks/app/matrix/page-e9a8006dc0bfa88c.js",
+      "transfer": 2745,
+      "decoded": 6576,
+      "dur": 100
+    },
+    {
+      "name": "/_next/static/chunks/app/layout-047d5e52b6686b30.js",
+      "transfer": 2550,
+      "decoded": 5397,
+      "dur": 35
+    },
+    {
+      "name": "/_next/static/chunks/webpack-a8ec645a4e87f1ae.js",
+      "transfer": 1973,
+      "decoded": 3557,
+      "dur": 26
+    },
+    {
+      "name": "/_next/static/chunks/main-app-8188c38450df4b6d.js",
+      "transfer": 762,
+      "decoded": 462,
+      "dur": 27
+    },
+    {
+      "name": "/_next/static/chunks/app/emergency/page-b10e3c6b00a330d4.js",
+      "transfer": 515,
+      "decoded": 215,
+      "dur": 77
+    }
+  ],
+  "html": {
+    "htmlBytes": 300695,
+    "bodyChildren": 12
+  }
+}

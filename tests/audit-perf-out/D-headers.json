@@ -1,0 +1,51 @@
+{
+  "/_next/static/chunks/webpack-a8ec645a4e87f1ae.js": {
+    "status": 200,
+    "cacheControl": "public, max-age=31536000, immutable",
+    "contentEncoding": "gzip",
+    "csp": "default-src 'self'; script-src 'self' 'u",
+    "vary": "Accept-Encoding"
+  },
+  "/logo/seal-square.svg": {
+    "status": 200,
+    "cacheControl": "public, max-age=0",
+    "contentEncoding": "gzip",
+    "csp": "default-src 'self'; script-src 'self' 'u",
+    "vary": "Accept-Encoding"
+  },
+  "/favicon.svg": {
+    "status": 200,
+    "cacheControl": "public, max-age=0",
+    "contentEncoding": "gzip",
+    "csp": "default-src 'self'; script-src 'self' 'u",
+    "vary": "Accept-Encoding"
+  },
+  "/sw.js": {
+    "status": 200,
+    "cacheControl": "no-cache, no-store, must-revalidate",
+    "contentEncoding": "gzip",
+    "csp": "default-src 'self'; script-src 'self' 'u",
+    "vary": "Accept-Encoding"
+  },
+  "/offline.html": {
+    "status": 200,
+    "cacheControl": "public, max-age=0",
+    "contentEncoding": "gzip",
+    "csp": "default-src 'self'; script-src 'self' 'u",
+    "vary": "Accept-Encoding"
+  },
+  "/manifest.json": {
+    "status": 200,
+    "cacheControl": "public, max-age=0",
+    "contentEncoding": null,
+    "csp": "default-src 'self'; script-src 'self' 'u",
+    "vary": "Accept-Encoding"
+  },
+  "/": {
+    "status": 200,
+    "cacheControl": "s-maxage=31536000, stale-while-revalidate",
+    "contentEncoding": "gzip",
+    "csp": "default-src 'self'; script-src 'self' 'u",
+    "vary": "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Accept-Encoding"
+  }
+}

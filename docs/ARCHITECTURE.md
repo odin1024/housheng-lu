@@ -1,6 +1,67 @@
 # 厚生錄 · 技术架构
 
 > 版本：v0.1 · 2026-10
+>
+> ⚠️ **阅读提示**：本文档的 §一～§九 是**早期规划稿**，与实际实现有出入（例如 §7.1 提到的
+> `wrangler.toml` 并不存在、部署方式已变更）。**以 §0「实现现状」为准**，其余章节请当作设计意图阅读。
+
+---
+
+## 〇、实现现状（2026-10-18 逐项核对）
+
+### 0.1 路由
+
+| 路由 | 类型 | 说明 |
+|---|---|---|
+| `/` | 服务端 | 卷端：长卷、人生阶段、今日必做、急方入口 |
+| `/explore` | 客户端 | 检索器（765 条 + 筛选 + 阶段手册，每页 50 条） |
+| `/book/[id]` | 服务端 | 单条详情（`dynamicParams = false`） |
+| `/ask` | 客户端 | 问答：纯检索 / AI 双模式，BYOK 设置面板 |
+| `/emergency`、`/emergency/[scenario]` | 服务端 | 12 个急救场景（离线可用） |
+| `/matrix` | 客户端 | 决策矩阵（本站派生：成本 × 章节口径） |
+| `/poster` | 客户端 | 海报生成器（canvas 导出） |
+| `/my` | 客户端 | 我的清单（localStorage） |
+| `/about` | 服务端 | 关于与合规声明 |
+| `/api/ask` | **Node 运行时** | POST 问答；GET 返回公开配置（不含密钥） |
+| `/api/ask/probe` | **Node 运行时** | 测试连接 / 取模型列表 |
+| `not-found` / `error` / `global-error` / `loading` | — | 错误与加载态 |
+
+### 0.2 `src/lib` 模块（19 个）
+
+```
+检索与内容     search-index(检索: n-gram+IDF)  entries  stats  filter  priority(先做排序)
+               life-stages(阶段↔章节映射)      emergency-scenarios  emergency-match
+问答(AI)       ask-provider(上游解析/调用)      ask-endpoint(地址安全校验, 含 DNS 复核)
+               ask-settings(BYOK 浏览器存储)   verify-answer(引用反编造校验)
+               rate-limit(进程内限流, 已知不足)
+其它           compliance  daily-pick  labels  storage  sync-info  toast-store
+```
+
+### 0.3 数据流（实际）
+
+```
+上游 GitHub ──pnpm sync──▶ content/upstream/(不入库) ──pnpm parse──▶ data/*.json(入库)
+                                                            │
+                            next build 读取 data/*.json ────┘
+                            （scripts/ensure-data.mjs 决定是否需要联网同步）
+```
+
+- **数据已入库** → clone 后离线即可构建；`content/upstream/` 是原料，不入库
+- 解析**幂等**：`syncDate` / `generateDate` 取上游提交日期，上游不变则零 diff（否则每日 workflow 会产生空提交）
+- 每日同步：`.github/workflows/sync.yml`（先 `pnpm verify && pnpm build` 自检，通过才提交）
+
+### 0.4 部署现状（与 §7.1 的规划不同）
+
+- 仓库**不内置 deploy workflow**：原 Cloudflare 版本（`pages-action@v1` + `directory: .next`）结构上不可能成功，已删除
+- **`/api/ask` 需要 Node 运行时**（`node:dns` / `node:net`）→ Cloudflare Workers 不可用，除非改写该校验
+- 可选：Vercel（推荐）/ 自建 Node / 其它支持 Node 运行时的托管；详见 [README「部署」](../README.md) 与 [SECURITY.md](../SECURITY.md)
+- CI 见 `.github/workflows/ci.yml`：合规检查 → 类型检查 → lint → 构建（**不需要联网同步上游**）
+
+### 0.5 已知不足（详见 SECURITY.md 与审计报告）
+
+- `next@14.2.15` 有 3 条 critical 公告（升级需跨大版本）
+- 限流可被伪造请求头绕过（单进程内存实现）；开启 AI 后属资金风险
+- `/explore`、`/my`、`/matrix`、`/poster` 各携带 2447KB 数据块（可优化到约 1/4，见审计报告）
 
 ---
 
@@ -465,12 +526,14 @@ output = ".next"
 
 | 项 | 措施 |
 |---|---|
-| 用户数据 | 仅 localStorage，不上传 |
+| 用户数据 | 「我的清单」仅在 localStorage，不上传；**问答内容在服务端配置了 AI key 时会转发给 Anthropic 用于生成回答**（本站不落库、不记原文，仅记状态码）。无追踪 Cookie、无第三方统计脚本 |
 | HTTPS | Cloudflare 自动 |
-| CSP | 严格 CSP，禁止 inline script |
-| Headers | X-Frame-Options DENY 等 |
-| 第三方依赖 | 仅开源、可审计 |
-| 隐私政策 | /about 页明确说明 |
+| CSP | 已下发 CSP（`next.config.mjs`），因 Next 引导脚本内联，`script-src` 含 `'unsafe-inline'`；无 `unsafe-eval`，`connect-src 'self'` 可挡数据外泄 |
+| Headers | X-Frame-Options DENY / X-Content-Type-Options / Referrer-Policy / Permissions-Policy / Strict-Transport-Security / CSP |
+| 限流 | `/api/ask` 10 次/分/IP + 同源校验 + 请求体 8KB 上限 + 上游 15s 超时。**局限**：计数在单进程内存、IP 取自请求头，裸 `next start` 下可被伪造头绕过；生产需在边缘（Cloudflare）做持久化限流 |
+| 第三方依赖 | 仅开源、可审计（运行时依赖 4 个） |
+| 隐私政策 | /ask 页底部有告知；/about 页尚未单列隐私小节（待补） |
+| 依赖安全 | `next@14.2.15` 命中 3 条 critical 公告（含 Windows 宿主未授权 RCE，修于 ≥15.5.24）→ **待升级**，未升级前不应公网暴露 |
 
 ---
 

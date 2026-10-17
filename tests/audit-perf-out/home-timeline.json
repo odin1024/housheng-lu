@@ -1,0 +1,513 @@
+{
+  "loadAt": 348,
+  "ttfb": 37,
+  "fcp": [
+    {
+      "n": "first-paint",
+      "t": 340
+    },
+    {
+      "n": "first-contentful-paint",
+      "t": 340
+    }
+  ],
+  "count": 46,
+  "entries": [
+    {
+      "p": "/logo/seal-square.svg",
+      "type": "link",
+      "start": 49,
+      "dur": 18,
+      "end": 67,
+      "transfer": 1024,
+      "decoded": 1378,
+      "beforeLoad": true
+    },
+    {
+      "p": "/logo/seal-end.svg",
+      "type": "link",
+      "start": 50,
+      "dur": 24,
+      "end": 73,
+      "transfer": 992,
+      "decoded": 1246,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/css/3b01acd9dc53a0fc.css",
+      "type": "link",
+      "start": 50,
+      "dur": 23,
+      "end": 73,
+      "transfer": 6385,
+      "decoded": 23808,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/webpack-a8ec645a4e87f1ae.js",
+      "type": "link",
+      "start": 50,
+      "dur": 24,
+      "end": 74,
+      "transfer": 1973,
+      "decoded": 3557,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/634-682076517e44479b.js",
+      "type": "script",
+      "start": 50,
+      "dur": 34,
+      "end": 84,
+      "transfer": 31992,
+      "decoded": 123530,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/6fbc38ef-88e47b2e128ce7a8.js",
+      "type": "script",
+      "start": 50,
+      "dur": 40,
+      "end": 90,
+      "transfer": 54042,
+      "decoded": 172831,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/main-app-8188c38450df4b6d.js",
+      "type": "script",
+      "start": 50,
+      "dur": 25,
+      "end": 75,
+      "transfer": 762,
+      "decoded": 462,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/app/page-8044ae67a8d72e99.js",
+      "type": "script",
+      "start": 50,
+      "dur": 32,
+      "end": 83,
+      "transfer": 2831,
+      "decoded": 5804,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/app/layout-047d5e52b6686b30.js",
+      "type": "script",
+      "start": 50,
+      "dur": 34,
+      "end": 84,
+      "transfer": 2550,
+      "decoded": 5397,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/906-b8aaed4840ae749c.js",
+      "type": "script",
+      "start": 50,
+      "dur": 33,
+      "end": 83,
+      "transfer": 7099,
+      "decoded": 20576,
+      "beforeLoad": true
+    },
+    {
+      "p": "/explore?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 427,
+      "dur": 18,
+      "end": 445,
+      "transfer": 2959,
+      "decoded": 7870,
+      "beforeLoad": false
+    },
+    {
+      "p": "/ask?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 427,
+      "dur": 19,
+      "end": 446,
+      "transfer": 2955,
+      "decoded": 7855,
+      "beforeLoad": false
+    },
+    {
+      "p": "/emergency?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 428,
+      "dur": 19,
+      "end": 446,
+      "transfer": 4026,
+      "decoded": 14497,
+      "beforeLoad": false
+    },
+    {
+      "p": "/matrix?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 428,
+      "dur": 19,
+      "end": 447,
+      "transfer": 3957,
+      "decoded": 10575,
+      "beforeLoad": false
+    },
+    {
+      "p": "/poster?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 428,
+      "dur": 23,
+      "end": 451,
+      "transfer": 3107,
+      "decoded": 8226,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/202-15168a2dbc648f9e.js",
+      "type": "script",
+      "start": 451,
+      "dur": 271,
+      "end": 722,
+      "transfer": 913759,
+      "decoded": 2506043,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/explore/page-8723447864ace575.js",
+      "type": "script",
+      "start": 451,
+      "dur": 36,
+      "end": 487,
+      "transfer": 6333,
+      "decoded": 16241,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/ask/page-5cb2654e9f5b2734.js",
+      "type": "script",
+      "start": 453,
+      "dur": 33,
+      "end": 486,
+      "transfer": 3111,
+      "decoded": 6298,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/emergency/page-b10e3c6b00a330d4.js",
+      "type": "script",
+      "start": 455,
+      "dur": 41,
+      "end": 495,
+      "transfer": 515,
+      "decoded": 215,
+      "beforeLoad": false
+    },
+    {
+      "p": "/my?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 456,
+      "dur": 21,
+      "end": 477,
+      "transfer": 2955,
+      "decoded": 7851,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/matrix/page-e9a8006dc0bfa88c.js",
+      "type": "script",
+      "start": 458,
+      "dur": 40,
+      "end": 497,
+      "transfer": 2745,
+      "decoded": 6576,
+      "beforeLoad": false
+    },
+    {
+      "p": "/about?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 459,
+      "dur": 27,
+      "end": 486,
+      "transfer": 4861,
+      "decoded": 14565,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/poster/page-d97e646dc0790cb9.js",
+      "type": "script",
+      "start": 464,
+      "dur": 38,
+      "end": 502,
+      "transfer": 5140,
+      "decoded": 12264,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/01-01?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 465,
+      "dur": 22,
+      "end": 488,
+      "transfer": 8180,
+      "decoded": 29498,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/my/page-c7c9300ab7368d3a.js",
+      "type": "script",
+      "start": 480,
+      "dur": 24,
+      "end": 504,
+      "transfer": 3151,
+      "decoded": 6893,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/01-02?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 491,
+      "dur": 14,
+      "end": 504,
+      "transfer": 7646,
+      "decoded": 28812,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/book/%5Bid%5D/page-0ddf08f7e5f32a18.js",
+      "type": "script",
+      "start": 493,
+      "dur": 18,
+      "end": 511,
+      "transfer": 3345,
+      "decoded": 7233,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/01-03?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 495,
+      "dur": 16,
+      "end": 511,
+      "transfer": 7999,
+      "decoded": 29599,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/01-04?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 507,
+      "dur": 8,
+      "end": 516,
+      "transfer": 8816,
+      "decoded": 31482,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/02-01?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 514,
+      "dur": 8,
+      "end": 522,
+      "transfer": 8291,
+      "decoded": 29804,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/02-02?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 522,
+      "dur": 16,
+      "end": 537,
+      "transfer": 0,
+      "decoded": 28426,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/02-03?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 526,
+      "dur": 12,
+      "end": 538,
+      "transfer": 0,
+      "decoded": 30194,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/02-04?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 539,
+      "dur": 16,
+      "end": 555,
+      "transfer": 0,
+      "decoded": 28768,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/03-01?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 542,
+      "dur": 13,
+      "end": 556,
+      "transfer": 0,
+      "decoded": 20982,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/03-02?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 558,
+      "dur": 15,
+      "end": 572,
+      "transfer": 0,
+      "decoded": 21151,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/03-03?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 560,
+      "dur": 12,
+      "end": 573,
+      "transfer": 0,
+      "decoded": 21526,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/03-04?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 575,
+      "dur": 15,
+      "end": 589,
+      "transfer": 0,
+      "decoded": 21566,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/04-01?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 577,
+      "dur": 13,
+      "end": 590,
+      "transfer": 0,
+      "decoded": 17162,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/04-02?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 592,
+      "dur": 13,
+      "end": 605,
+      "transfer": 0,
+      "decoded": 17512,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/04-03?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 594,
+      "dur": 11,
+      "end": 605,
+      "transfer": 0,
+      "decoded": 17622,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/04-04?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 607,
+      "dur": 12,
+      "end": 619,
+      "transfer": 0,
+      "decoded": 17995,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/05-01?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 609,
+      "dur": 14,
+      "end": 623,
+      "transfer": 0,
+      "decoded": 29982,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/05-02?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 621,
+      "dur": 15,
+      "end": 635,
+      "transfer": 0,
+      "decoded": 30534,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/05-03?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 625,
+      "dur": 13,
+      "end": 638,
+      "transfer": 0,
+      "decoded": 31239,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/05-04?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 637,
+      "dur": 12,
+      "end": 649,
+      "transfer": 0,
+      "decoded": 30157,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/06-01?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 640,
+      "dur": 11,
+      "end": 651,
+      "transfer": 0,
+      "decoded": 24900,
+      "beforeLoad": false
+    }
+  ],
+  "sumBeforeLoad": 109650,
+  "sumAfterLoad": 1003851,
+  "bigAfterLoad": [
+    {
+      "p": "/_next/static/chunks/202-15168a2dbc648f9e.js",
+      "type": "script",
+      "start": 451,
+      "dur": 271,
+      "end": 722,
+      "transfer": 913759,
+      "decoded": 2506043,
+      "beforeLoad": false
+    }
+  ],
+  "bigBeforeLoad": [
+    {
+      "p": "/_next/static/chunks/634-682076517e44479b.js",
+      "type": "script",
+      "start": 50,
+      "dur": 34,
+      "end": 84,
+      "transfer": 31992,
+      "decoded": 123530,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/6fbc38ef-88e47b2e128ce7a8.js",
+      "type": "script",
+      "start": 50,
+      "dur": 40,
+      "end": 90,
+      "transfer": 54042,
+      "decoded": 172831,
+      "beforeLoad": true
+    }
+  ]
+}

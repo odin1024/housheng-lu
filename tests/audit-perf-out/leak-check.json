@@ -1,0 +1,17 @@
+{
+  "/_next/static/chunks/202-15168a2dbc648f9e.js.map": {
+    "status": 404,
+    "size": 18164
+  },
+  "/_next/static/chunks/202-15168a2dbc648f9e.js": {
+    "status": 200,
+    "size": 2506043
+  },
+  "homeHtml": {
+    "bytes": 300676,
+    "contains01_01": true,
+    "containsTitle_安全带": true,
+    "containsLongScrollSvg": true,
+    "looksLikeRSC": true
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "health": {
+    "status": 200,
+    "body": {
+      "ok": true,
+      "totalEntries": 765
+    }
+  },
+  "ask": {
+    "status": 200,
+    "ms": 19,
+    "model": "search-only",
+    "fallback": true,
+    "citations": 8,
+    "answerHead": "依原书检索, 相关条目如下:\n\n[1] 第 29 节第 1 条 · 29-01（A 级）\n    亲人刚走的那几天别一个"
+  },
+  "rateLimitCodes": [
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    200,
+    429,
+    429,
+    429,
+    429,
+    429,
+    429
+  ],
+  "rateLimitHit": 6,
+  "bigBody": {
+    "status": 429,
+    "body": "{\"error\":\"请求过于频繁, 请稍后再试\"}"
+  },
+  "empty": 429,
+  "badJson": 429,
+  "healthBody": {
+    "ok": true,
+    "totalEntries": 765
+  }
+}

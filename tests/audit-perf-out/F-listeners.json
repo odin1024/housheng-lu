@@ -1,0 +1,83 @@
+[
+  {
+    "label": "about-blank",
+    "listeners": 0,
+    "nodes": 16,
+    "heapMB": 0.81,
+    "layouts": 0,
+    "recalc": 0,
+    "domNodes": 3
+  },
+  {
+    "label": "/book/01-01",
+    "listeners": 365,
+    "nodes": 612,
+    "heapMB": 8.96,
+    "layouts": 2,
+    "recalc": 4,
+    "domNodes": 279
+  },
+  {
+    "label": "/explore",
+    "listeners": 1075,
+    "nodes": 2613,
+    "heapMB": 13.95,
+    "layouts": 3,
+    "recalc": 4,
+    "domNodes": 1001
+  },
+  {
+    "label": "/",
+    "listeners": 1854,
+    "nodes": 4812,
+    "heapMB": 19.65,
+    "layouts": 12,
+    "recalc": 19,
+    "domNodes": 1218
+  },
+  {
+    "label": "/book/02-02",
+    "listeners": 336,
+    "nodes": 830,
+    "heapMB": 7.87,
+    "layouts": 2,
+    "recalc": 3,
+    "domNodes": 276
+  },
+  {
+    "label": "/explore",
+    "listeners": 1044,
+    "nodes": 2823,
+    "heapMB": 13.22,
+    "layouts": 2,
+    "recalc": 3,
+    "domNodes": 1002
+  },
+  {
+    "label": "/",
+    "listeners": 1853,
+    "nodes": 5022,
+    "heapMB": 21.72,
+    "layouts": 18,
+    "recalc": 20,
+    "domNodes": 1218
+  },
+  {
+    "label": "/my",
+    "listeners": 287,
+    "nodes": 524,
+    "heapMB": 7.66,
+    "layouts": 3,
+    "recalc": 4,
+    "domNodes": 110
+  },
+  {
+    "label": "/",
+    "listeners": 480,
+    "nodes": 2275,
+    "heapMB": 9.05,
+    "layouts": 13,
+    "recalc": 17,
+    "domNodes": 1218
+  }
+]

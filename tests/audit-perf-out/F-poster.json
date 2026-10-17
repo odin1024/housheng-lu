@@ -1,0 +1,102 @@
+[
+  {
+    "label": "initial",
+    "heapMB": 8.54,
+    "nodes": 251,
+    "listeners": 351,
+    "layouts": 0,
+    "recalc": 0,
+    "srcLen": 0,
+    "canvases": 1
+  },
+  {
+    "label": "regen-1",
+    "heapMB": 10.01,
+    "nodes": 255,
+    "listeners": 407,
+    "layouts": 1,
+    "recalc": 6,
+    "srcLen": 750858,
+    "canvases": 1
+  },
+  {
+    "label": "regen-2",
+    "heapMB": 10.27,
+    "nodes": 255,
+    "listeners": 448,
+    "layouts": 1,
+    "recalc": 9,
+    "srcLen": 750858,
+    "canvases": 1
+  },
+  {
+    "label": "regen-3",
+    "heapMB": 10.54,
+    "nodes": 255,
+    "listeners": 489,
+    "layouts": 1,
+    "recalc": 12,
+    "srcLen": 750858,
+    "canvases": 1
+  },
+  {
+    "label": "regen-4",
+    "heapMB": 10.79,
+    "nodes": 255,
+    "listeners": 530,
+    "layouts": 1,
+    "recalc": 15,
+    "srcLen": 750858,
+    "canvases": 1
+  },
+  {
+    "label": "regen-5",
+    "heapMB": 11.02,
+    "nodes": 255,
+    "listeners": 571,
+    "layouts": 1,
+    "recalc": 18,
+    "srcLen": 750858,
+    "canvases": 1
+  },
+  {
+    "label": "regen-6",
+    "heapMB": 11.24,
+    "nodes": 255,
+    "listeners": 612,
+    "layouts": 1,
+    "recalc": 21,
+    "srcLen": 750858,
+    "canvases": 1
+  },
+  {
+    "label": "template-竖版",
+    "heapMB": 11.54,
+    "nodes": 255,
+    "listeners": 694,
+    "layouts": 3,
+    "recalc": 27,
+    "srcLen": 1080166,
+    "canvases": 1
+  },
+  {
+    "label": "template-横版",
+    "heapMB": 9.9,
+    "nodes": 255,
+    "listeners": 776,
+    "layouts": 5,
+    "recalc": 34,
+    "srcLen": 406902,
+    "canvases": 1
+  },
+  {
+    "label": "template-方形",
+    "heapMB": 10.24,
+    "nodes": 255,
+    "listeners": 858,
+    "layouts": 7,
+    "recalc": 41,
+    "srcLen": 750858,
+    "canvases": 1
+  }
+]

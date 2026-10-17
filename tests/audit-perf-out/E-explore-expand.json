@@ -1,0 +1,58 @@
+[
+  {
+    "step": "initial",
+    "nodes": 999,
+    "articles": 50,
+    "buttons": 203,
+    "mem": 12.1
+  },
+  {
+    "step": "after-expand-1",
+    "nodes": 1699,
+    "articles": 100,
+    "buttons": 403,
+    "mem": 12.1
+  },
+  {
+    "step": "after-expand-2",
+    "nodes": 2399,
+    "articles": 150,
+    "buttons": 603,
+    "mem": 12.1
+  },
+  {
+    "step": "after-expand-3",
+    "nodes": 3099,
+    "articles": 200,
+    "buttons": 803,
+    "mem": 12.1
+  },
+  {
+    "step": "after-expand-4",
+    "nodes": 3799,
+    "articles": 250,
+    "buttons": 1003,
+    "mem": 12.1
+  },
+  {
+    "step": "after-expand-5",
+    "nodes": 4499,
+    "articles": 300,
+    "buttons": 1203,
+    "mem": 12.1
+  },
+  {
+    "step": "after-expand-6",
+    "nodes": 5199,
+    "articles": 350,
+    "buttons": 1403,
+    "mem": 12.1
+  },
+  {
+    "step": "fully-expanded",
+    "nodes": 11007,
+    "articles": 765,
+    "buttons": 3062,
+    "mem": 12.1
+  }
+]

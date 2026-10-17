@@ -1,0 +1,498 @@
+{
+  "loadAt": 790,
+  "ttfb": 311,
+  "fcp": [
+    {
+      "n": "first-paint",
+      "t": 764
+    },
+    {
+      "n": "first-contentful-paint",
+      "t": 764
+    }
+  ],
+  "count": 48,
+  "entries": [
+    {
+      "p": "/logo/seal-square.svg",
+      "type": "link",
+      "start": 319,
+      "end": 413,
+      "transfer": 1024,
+      "decoded": 1378,
+      "beforeLoad": true
+    },
+    {
+      "p": "/logo/seal-end.svg",
+      "type": "link",
+      "start": 319,
+      "end": 445,
+      "transfer": 992,
+      "decoded": 1246,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/css/454d5358c5471012.css",
+      "type": "link",
+      "start": 320,
+      "end": 479,
+      "transfer": 6400,
+      "decoded": 23896,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/webpack-a8ec645a4e87f1ae.js",
+      "type": "link",
+      "start": 320,
+      "end": 446,
+      "transfer": 1973,
+      "decoded": 3557,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/6fbc38ef-88e47b2e128ce7a8.js",
+      "type": "script",
+      "start": 320,
+      "end": 629,
+      "transfer": 54042,
+      "decoded": 172831,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/634-682076517e44479b.js",
+      "type": "script",
+      "start": 320,
+      "end": 609,
+      "transfer": 31992,
+      "decoded": 123530,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/main-app-8188c38450df4b6d.js",
+      "type": "script",
+      "start": 320,
+      "end": 569,
+      "transfer": 762,
+      "decoded": 462,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/906-b8aaed4840ae749c.js",
+      "type": "script",
+      "start": 320,
+      "end": 623,
+      "transfer": 7099,
+      "decoded": 20576,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/app/page-8044ae67a8d72e99.js",
+      "type": "script",
+      "start": 320,
+      "end": 622,
+      "transfer": 2831,
+      "decoded": 5804,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/app/layout-047d5e52b6686b30.js",
+      "type": "script",
+      "start": 320,
+      "end": 628,
+      "transfer": 2550,
+      "decoded": 5397,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/app/error-483293d989739b72.js",
+      "type": "script",
+      "start": 320,
+      "end": 654,
+      "transfer": 1410,
+      "decoded": 2010,
+      "beforeLoad": true
+    },
+    {
+      "p": "/_next/static/chunks/app/global-error-f4c197ab4f13966d.js",
+      "type": "script",
+      "start": 321,
+      "end": 681,
+      "transfer": 1263,
+      "decoded": 1626,
+      "beforeLoad": true
+    },
+    {
+      "p": "/explore?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 838,
+      "end": 897,
+      "transfer": 3299,
+      "decoded": 9651,
+      "beforeLoad": false
+    },
+    {
+      "p": "/ask?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 839,
+      "end": 898,
+      "transfer": 3299,
+      "decoded": 9636,
+      "beforeLoad": false
+    },
+    {
+      "p": "/emergency?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 839,
+      "end": 898,
+      "transfer": 4272,
+      "decoded": 16167,
+      "beforeLoad": false
+    },
+    {
+      "p": "/matrix?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 840,
+      "end": 899,
+      "transfer": 4213,
+      "decoded": 12356,
+      "beforeLoad": false
+    },
+    {
+      "p": "/poster?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 840,
+      "end": 903,
+      "transfer": 3390,
+      "decoded": 10007,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/202-15168a2dbc648f9e.js",
+      "type": "script",
+      "start": 899,
+      "end": 1491,
+      "transfer": 913759,
+      "decoded": 2506043,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/explore/page-8723447864ace575.js",
+      "type": "script",
+      "start": 900,
+      "end": 969,
+      "transfer": 6333,
+      "decoded": 16241,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/ask/page-5cb2654e9f5b2734.js",
+      "type": "script",
+      "start": 902,
+      "end": 969,
+      "transfer": 3111,
+      "decoded": 6298,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/emergency/page-b34cb607d8d1c365.js",
+      "type": "script",
+      "start": 904,
+      "end": 954,
+      "transfer": 519,
+      "decoded": 219,
+      "beforeLoad": false
+    },
+    {
+      "p": "/my?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 906,
+      "end": 947,
+      "transfer": 3296,
+      "decoded": 9632,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/matrix/page-e9a8006dc0bfa88c.js",
+      "type": "script",
+      "start": 907,
+      "end": 1082,
+      "transfer": 2745,
+      "decoded": 6576,
+      "beforeLoad": false
+    },
+    {
+      "p": "/about?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 908,
+      "end": 956,
+      "transfer": 5092,
+      "decoded": 16346,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/poster/page-d97e646dc0790cb9.js",
+      "type": "script",
+      "start": 909,
+      "end": 1152,
+      "transfer": 5140,
+      "decoded": 12264,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/01-01?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 911,
+      "end": 1165,
+      "transfer": 8338,
+      "decoded": 31168,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/my/page-c7c9300ab7368d3a.js",
+      "type": "script",
+      "start": 948,
+      "end": 1181,
+      "transfer": 3151,
+      "decoded": 6893,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/01-02?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 960,
+      "end": 1191,
+      "transfer": 7801,
+      "decoded": 30482,
+      "beforeLoad": false
+    },
+    {
+      "p": "/_next/static/chunks/app/book/%5Bid%5D/page-0ddf08f7e5f32a18.js",
+      "type": "script",
+      "start": 1167,
+      "end": 1228,
+      "transfer": 3345,
+      "decoded": 7233,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/01-03?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1169,
+      "end": 1305,
+      "transfer": 8154,
+      "decoded": 31269,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/01-04?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1194,
+      "end": 1311,
+      "transfer": 0,
+      "decoded": 33152,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/02-01?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1307,
+      "end": 1338,
+      "transfer": 0,
+      "decoded": 31474,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/02-02?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1314,
+      "end": 1341,
+      "transfer": 0,
+      "decoded": 30096,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/02-03?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1341,
+      "end": 1364,
+      "transfer": 0,
+      "decoded": 31864,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/02-04?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1343,
+      "end": 1364,
+      "transfer": 0,
+      "decoded": 30438,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/03-01?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1367,
+      "end": 1393,
+      "transfer": 0,
+      "decoded": 22652,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/03-02?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1369,
+      "end": 1402,
+      "transfer": 0,
+      "decoded": 22821,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/03-03?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1391,
+      "end": 1423,
+      "transfer": 0,
+      "decoded": 23196,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/03-04?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1403,
+      "end": 1428,
+      "transfer": 0,
+      "decoded": 23236,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/04-01?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1425,
+      "end": 1449,
+      "transfer": 0,
+      "decoded": 18832,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/04-02?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1429,
+      "end": 1449,
+      "transfer": 0,
+      "decoded": 19182,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/04-03?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1451,
+      "end": 1467,
+      "transfer": 0,
+      "decoded": 19292,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/04-04?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1453,
+      "end": 1470,
+      "transfer": 0,
+      "decoded": 19665,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/05-01?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1470,
+      "end": 1498,
+      "transfer": 0,
+      "decoded": 31652,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/05-02?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1472,
+      "end": 1498,
+      "transfer": 0,
+      "decoded": 32204,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/05-03?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1501,
+      "end": 1525,
+      "transfer": 0,
+      "decoded": 32909,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/05-04?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1505,
+      "end": 1525,
+      "transfer": 0,
+      "decoded": 31827,
+      "beforeLoad": false
+    },
+    {
+      "p": "/book/06-01?_rsc=1wtp7",
+      "type": "fetch",
+      "start": 1523,
+      "end": 1538,
+      "transfer": 0,
+      "decoded": 26570,
+      "beforeLoad": false
+    }
+  ],
+  "beforeLoadKB": 109.7,
+  "afterLoadKB": 966.1,
+  "jsAfterLoad": [
+    {
+      "p": "/_next/static/chunks/202-15168a2dbc648f9e.js",
+      "KB": 892.3,
+      "start": 899
+    },
+    {
+      "p": "/_next/static/chunks/app/explore/page-8723447864ace575.js",
+      "KB": 6.2,
+      "start": 900
+    },
+    {
+      "p": "/_next/static/chunks/app/ask/page-5cb2654e9f5b2734.js",
+      "KB": 3,
+      "start": 902
+    },
+    {
+      "p": "/_next/static/chunks/app/emergency/page-b34cb607d8d1c365.js",
+      "KB": 0.5,
+      "start": 904
+    },
+    {
+      "p": "/_next/static/chunks/app/matrix/page-e9a8006dc0bfa88c.js",
+      "KB": 2.7,
+      "start": 907
+    },
+    {
+      "p": "/_next/static/chunks/app/poster/page-d97e646dc0790cb9.js",
+      "KB": 5,
+      "start": 909
+    },
+    {
+      "p": "/_next/static/chunks/app/my/page-c7c9300ab7368d3a.js",
+      "KB": 3.1,
+      "start": 948
+    },
+    {
+      "p": "/_next/static/chunks/app/book/%5Bid%5D/page-0ddf08f7e5f32a18.js",
+      "KB": 3.3,
+      "start": 1167
+    }
+  ],
+  "rscPrefetch": 28,
+  "domNodes": 1216,
+  "svg": 1,
+  "svgDesc": 750,
+  "htmlBytes": 302433
+}

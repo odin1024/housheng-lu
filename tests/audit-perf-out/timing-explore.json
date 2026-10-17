@@ -1,0 +1,175 @@
+{
+  "url": "/explore",
+  "timing": {
+    "redirect": 0,
+    "dns": 0.7999999970197678,
+    "tcp": 1.1000000089406967,
+    "tls": 0,
+    "request": 4.600000008940697,
+    "ttfb": 8.300000011920929,
+    "responseDownload": 0.699999988079071,
+    "domInteractive": 88,
+    "domContentLoaded": 0,
+    "domComplete": 246.1000000089407,
+    "loadEvent": 246.1000000089407,
+    "transferSize": 4699,
+    "encodedBodySize": 4399,
+    "decodedBodySize": 16560
+  },
+  "paint": [
+    {
+      "name": "first-paint",
+      "startTime": 136
+    },
+    {
+      "name": "first-contentful-paint",
+      "startTime": 136
+    }
+  ],
+  "audit": {
+    "lcp": {
+      "startTime": 484,
+      "renderTime": 484,
+      "loadTime": 0,
+      "size": 51408,
+      "url": "",
+      "element": "DIV.plain-language"
+    },
+    "cls": 0.06375,
+    "clsEntries": [],
+    "shifts": [
+      {
+        "value": 0.06375,
+        "startTime": 429,
+        "sources": [
+          "FOOTER"
+        ]
+      }
+    ],
+    "longtasks": []
+  },
+  "dom": {
+    "totalNodes": 998,
+    "svg": 0,
+    "svgInner": 0,
+    "path": 0,
+    "rect": 0,
+    "text": 0,
+    "g": 0,
+    "a": 16,
+    "img": 2,
+    "buttons": 203
+  },
+  "resourceTotals": {
+    "count": 24,
+    "transfer": 1026911,
+    "decoded": 3139275
+  },
+  "byType": {
+    "link": {
+      "count": 4,
+      "transfer": 10374,
+      "decoded": 29989
+    },
+    "script": {
+      "count": 13,
+      "transfer": 1016537,
+      "decoded": 2883130
+    },
+    "fetch": {
+      "count": 7,
+      "transfer": 0,
+      "decoded": 226156
+    }
+  },
+  "jsResources": [
+    {
+      "name": "/_next/static/chunks/202-15168a2dbc648f9e.js",
+      "transfer": 913759,
+      "decoded": 2506043,
+      "dur": 170
+    },
+    {
+      "name": "/_next/static/chunks/6fbc38ef-88e47b2e128ce7a8.js",
+      "transfer": 54042,
+      "decoded": 172831,
+      "dur": 37
+    },
+    {
+      "name": "/_next/static/chunks/634-682076517e44479b.js",
+      "transfer": 31992,
+      "decoded": 123530,
+      "dur": 31
+    },
+    {
+      "name": "/_next/static/chunks/906-b8aaed4840ae749c.js",
+      "transfer": 7099,
+      "decoded": 20576,
+      "dur": 31
+    },
+    {
+      "name": "/_next/static/chunks/app/explore/page-8723447864ace575.js",
+      "transfer": 6333,
+      "decoded": 16241,
+      "dur": 33
+    },
+    {
+      "name": "/_next/static/chunks/app/layout-047d5e52b6686b30.js",
+      "transfer": 2550,
+      "decoded": 5397,
+      "dur": 33
+    },
+    {
+      "name": "/_next/static/chunks/webpack-a8ec645a4e87f1ae.js",
+      "transfer": 1973,
+      "decoded": 3557,
+      "dur": 23
+    },
+    {
+      "name": "/_next/static/chunks/main-app-8188c38450df4b6d.js",
+      "transfer": 762,
+      "decoded": 462,
+      "dur": 23
+    },
+    {
+      "name": "/_next/static/chunks/app/ask/page-5cb2654e9f5b2734.js",
+      "transfer": 0,
+      "decoded": 6298,
+      "dur": 8
+    },
+    {
+      "name": "/_next/static/chunks/app/page-8044ae67a8d72e99.js",
+      "transfer": 0,
+      "decoded": 5804,
+      "dur": 8
+    },
+    {
+      "name": "/_next/static/chunks/app/emergency/page-b10e3c6b00a330d4.js",
+      "transfer": 0,
+      "decoded": 215,
+      "dur": 13
+    },
+    {
+      "name": "/_next/static/chunks/app/matrix/page-e9a8006dc0bfa88c.js",
+      "transfer": 0,
+      "decoded": 6576,
+      "dur": 14
+    },
+    {
+      "name": "/_next/static/chunks/app/poster/page-d97e646dc0790cb9.js",
+      "transfer": 0,
+      "decoded": 12264,
+      "dur": 12
+    },
+    {
+      "name": "/_next/static/chunks/app/my/page-c7c9300ab7368d3a.js",
+      "transfer": 0,
+      "decoded": 6893,
+      "dur": 8
+    }
+  ],
+  "html": {
+    "htmlBytes": 88469,
+    "bodyChildren": 12
+  }
+}
