@@ -7,7 +7,8 @@ test('合法地址: 公网 https/http 放行', () => {
     'https://api.openai.com/v1',
     'https://api.deepseek.com/v1',
     'http://api.example.com:8080/v1',
-    'https://api.example-relay.com/v1',
+    // 注意: 这里不要写具体部署所用的中转站域名 —— 公开仓库里没必要暴露部署者的供应商
+    'https://api.some-other-relay.example/v1',
     'https://generativelanguage.googleapis.com/v1beta/openai',
   ]) {
     const r = parseCustomBase(ok);
