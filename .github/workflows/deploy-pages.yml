@@ -66,11 +66,10 @@ jobs:
       - name: 关闭 Jekyll (否则 _next 目录会被忽略)
         run: touch out/.nojekyll
 
-      # 首次运行时自动启用 Pages(Source = GitHub Actions), 省掉手动去 Settings 点一下。
-      # 需要本 workflow 声明 pages: write 与 id-token: write(已在文件顶部)。
+      # 不要加 enablement: true —— 用 GITHUB_TOKEN 启用 Pages 需要 admin 权限, 会 403。
+      # Pages 已用带 public_repo 的 token 通过 API 一次性启用 (build_type=workflow);
+      # 新建仓库(或迁移)时需要先启用一次, 见 README「部署 A」。
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
