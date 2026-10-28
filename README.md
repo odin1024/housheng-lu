@@ -105,9 +105,19 @@ pnpm dev            # 打开 http://localhost:3000
 ### 测试
 
 ```bash
-node node_modules/next/dist/bin/next start -p 3000   # 先起服务
-PLAYWRIGHT_BROWSERS_PATH=<浏览器路径> npx playwright test <spec> --workers=1
+# 1) 首次需要装浏览器（约 120MB）
+npx playwright install chromium
+
+# 2) 先起生产服务
+node node_modules/next/dist/bin/next start -p 3000 -H 127.0.0.1
+
+# 3) 跑测试（默认读系统浏览器缓存目录，通常不必设环境变量）
+npx playwright test <spec> --workers=1
 ```
+
+> 浏览器装在别处时才需要 `PLAYWRIGHT_BROWSERS_PATH=<目录>`。
+> 若报 `Executable doesn't exist ... chromium_headless_shell-XXXX`，说明浏览器版本与 `@playwright/test` 不匹配，
+> 重跑 `npx playwright install chromium` 即可。
 
 约 75 个 Playwright spec：`check-*` 是带断言的回归守卫，`audit-*` 是审计用例，`shots-*` 只出图（供文档引用）。
 检索质量与阈值校准类用例直接在进程内调用检索函数（毫秒级、零 token 成本）；

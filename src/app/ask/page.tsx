@@ -541,7 +541,7 @@ export default function AskPage() {
             <p className="text-xs text-ink-soft leading-relaxed mb-3">
               常见原因: 网络中断 · 同一 IP 每分钟超过 10 次 · 服务暂时不可用。
               本页所有回答都来自原书检索, 也可以直接用
-              <Link href="/explore" className="text-vermillion underline underline-offset-2 mx-1">
+              <Link href="/explore" prefetch={false} className="text-vermillion underline underline-offset-2 mx-1">
                 检索器
               </Link>
               自己查原文。

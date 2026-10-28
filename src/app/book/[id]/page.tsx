@@ -38,6 +38,10 @@ export default function BookEntryPage({ params }: { params: { id: string } }) {
         )}
         <Link
           href={`/explore?section=${entry.section}`}
+          // 必须关预取: /explore 的客户端包里有 2.4MB 数据块 (raw) / ~890KB gzip。
+          // 实测(Playwright 时序): 本页 319ms 预取 /explore?section=13 → 340ms 拉下 2427KB,
+          // 于是"每个条目详情页"都悄悄下载了整站数据 (页面自身包只有 6 个脚本)。
+          prefetch={false}
           className="text-ink-soft hover:text-vermillion no-underline"
         >
           第 {entry.section} 节

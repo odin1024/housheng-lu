@@ -132,7 +132,7 @@ export default function MyPage() {
           <p className="text-lg">{items.length === 0 ? '卷中尚无条目' : '此标签下没有条目'}</p>
           <p className="text-sm mt-2">
             去{' '}
-            <Link href="/explore" className="text-indigo">
+            <Link href="/explore" prefetch={false} className="text-indigo">
               检索
             </Link>{' '}
             收藏感兴趣的建议

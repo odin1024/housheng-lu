@@ -34,6 +34,8 @@ export default function NotFound() {
         </Link>
         <Link
           href="/explore"
+          // 关预取: /explore 的客户端包含 2.4MB 数据块, 404 页没必要替访客预下载
+          prefetch={false}
           className="px-4 py-2 border border-border text-ink-soft hover:border-vermillion hover:text-vermillion"
         >
           去检索 {''}

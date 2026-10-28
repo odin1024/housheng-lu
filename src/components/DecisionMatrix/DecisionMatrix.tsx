@@ -215,7 +215,7 @@ export function DecisionMatrix({ className = '' }: { className?: string }) {
           {current.count > 10 && (
             <p className="text-xs text-ink-soft mt-2">
               仅列前 10 条, 其余 {current.count - 10} 条请到{' '}
-              <Link href="/explore" className="text-vermillion">
+              <Link href="/explore" prefetch={false} className="text-vermillion">
                 检索
               </Link>{' '}
               按证据等级与成本筛选。
