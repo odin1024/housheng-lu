@@ -153,14 +153,17 @@ export function DecisionMatrix({ className = '' }: { className?: string }) {
                         className={`w-full h-16 md:h-20 flex flex-col items-center justify-center border transition-colors ${
                           isSel ? 'border-seal' : 'border-border hover:border-vermillion'
                         }`}
-                        style={{ background: `rgba(183, 50, 41, ${intensity})` }}
+                        // 背景改为从 token 派生 (原来硬编码 rgba(183,50,41,…), 改了朱砂色不会同步)
+                        style={{ background: `color-mix(in srgb, var(--color-seal) ${Math.round(intensity * 100)}%, transparent)` }}
                       >
+                        {/* 24px 粗体属"大文本", 只需 3:1; 朱砂在深格底色上 3.32:1 仍达标 */}
                         <span className="text-2xl font-bold text-seal leading-none">
                           {cell.count}
                         </span>
-                        <span className="text-[11px] text-ink-soft mt-1">条</span>
+                        {/* 11px 小字必须 ≥4.5:1 —— 淡墨在深格上只有 3.05, 改墨色后 7.35:1 */}
+                        <span className="text-[11px] text-ink mt-1">条</span>
                         {isBest && cell.count > 0 && (
-                          <span className="text-[11px] text-seal mt-0.5 font-bold">★ 先做这里</span>
+                          <span className="text-[11px] text-ink mt-0.5 font-bold">★ 先做这里</span>
                         )}
                       </button>
                     </td>
@@ -198,7 +201,7 @@ export function DecisionMatrix({ className = '' }: { className?: string }) {
                 <span className="text-seal font-mono text-xs flex-shrink-0">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <Link href={`/book/${e.id}`} className="flex-1 min-w-0 hover:text-vermillion">
+                <Link href={`/book/${e.id}`} className="flex-1 min-w-0 min-h-[24px] flex items-center hover:text-vermillion">
                   {e.title}
                 </Link>
                 <span
@@ -238,7 +241,7 @@ export function DecisionMatrix({ className = '' }: { className?: string }) {
               <span className="text-seal font-mono text-xs flex-shrink-0">
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <Link href={`/book/${e.id}`} className="flex-1 min-w-0 hover:text-vermillion">
+              <Link href={`/book/${e.id}`} className="flex-1 min-w-0 min-h-[24px] flex items-center hover:text-vermillion">
                 {e.title}
               </Link>
               <span className="text-xs text-ink-soft flex-shrink-0">

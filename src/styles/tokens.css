@@ -6,7 +6,10 @@
   --color-ink-soft: #6B5D4A;
   --color-vermillion: #8B3A3A;
   --color-indigo: #2C4A6B;
-  --color-seal: #B73229;
+  /* 朱砂。原 #B73229 在纸色 #E8DCC0 上只有 4.41:1, 差 0.09 达不到 AA(4.5) ——
+     审计实测有 7 处"朱砂字压纸色"因此不合格(首页 CTA、"01"序号、矩阵按钮与标题、海报版式名)。
+     加深到 #A82A20: 纸色上 5.11:1、浅底 5.73:1, 视觉仍是朱砂。 */
+  --color-seal: #A82A20;
   --color-border: #C9B894;
 
   /* 字体 - 优先系统字体确保所有平台都有合理 fallback */

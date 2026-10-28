@@ -163,17 +163,20 @@ export function EntryCard({
         </div>
       )}
 
+      {/* 工具栏按钮的可点区域
+          实测(390×844): 「藏/✓/传」只有 14×20、11×20, 低于 WCAG 2.2 AA(2.5.8) 的 24×24。
+          统一给最小 24×24 的 inline-flex 盒子, 单字按钮居中, 视觉不变但手指可点。 */}
       <div className="flex items-center gap-4 mt-4 text-sm" role="toolbar" aria-label="条目操作">
-        <button onClick={toggle} aria-pressed={expanded}>
+        <button className="inline-flex items-center justify-center min-h-[24px] min-w-[24px]" onClick={toggle} aria-pressed={expanded}>
           {expanded ? '▲ 收起' : '▶ 卷开'}
         </button>
-        <button onClick={handleSave} aria-pressed={inList}>
+        <button className="inline-flex items-center justify-center min-h-[24px] min-w-[24px]" onClick={handleSave} aria-pressed={inList}>
           {inList ? '已藏' : '藏'}
         </button>
-        <button onClick={handleDone} aria-label="标记完成">
+        <button className="inline-flex items-center justify-center min-h-[24px] min-w-[24px]" onClick={handleDone} aria-label="标记完成">
           ✓
         </button>
-        <button onClick={handleShare} className="ml-auto">
+        <button className="ml-auto inline-flex items-center justify-center min-h-[24px] min-w-[24px]" onClick={handleShare}>
           传
         </button>
       </div>

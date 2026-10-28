@@ -264,7 +264,7 @@ export default function AskPage() {
           onClick={() => setSettingsOpen((v) => !v)}
           aria-expanded={settingsOpen}
           aria-controls="ask-settings"
-          className="text-xs text-ink-soft hover:text-seal underline underline-offset-2"
+          className="inline-flex items-center min-h-[24px] text-xs text-ink-soft hover:text-seal underline underline-offset-2"
         >
           ⚙ AI 设置 ·{' '}
           {!aiConfig
@@ -525,7 +525,7 @@ export default function AskPage() {
           <p className="mb-6">
             <button
               onClick={() => setExamplesOpen(true)}
-              className="text-xs text-ink-soft hover:text-seal underline underline-offset-2"
+              className="inline-flex items-center min-h-[24px] text-xs text-ink-soft hover:text-seal underline underline-offset-2"
             >
               换个问题试试 →
             </button>

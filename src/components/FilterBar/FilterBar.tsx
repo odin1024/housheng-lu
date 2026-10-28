@@ -271,7 +271,8 @@ function FilterCheckbox({
 }) {
   return (
     <label
-      className="flex items-center gap-2 cursor-pointer text-sm hover:text-vermillion truncate"
+      // min-h-[24px]: 实测(390×844)筛选项整行只有 20px 高, 低于 WCAG 2.2 AA(2.5.8) 的 24×24
+      className="flex items-center gap-2 cursor-pointer text-sm hover:text-vermillion truncate min-h-[24px]"
       title={title || label}
     >
       <input

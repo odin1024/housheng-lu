@@ -1,5 +1,5 @@
 // 审计: 色彩对比度 (WCAG 2.x) — 只读, 不改任何源码
-import { test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { BASE, AUDIT_PAGES } from './audit-pages';
 
 const CONTRAST_JS = `(() => {
@@ -121,13 +121,18 @@ for (const [path, label] of AUDIT_PAGES) {
     await page.goto(BASE + path, { waitUntil: 'networkidle' });
     await page.waitForTimeout(400);
     const rows: any[] = await page.evaluate(CONTRAST_JS);
-    const fails = rows.filter((r) => !r.pass);
-    console.log(`\n### 对比度 ${label} ${path} | 样本 ${rows.length} | 不合格 ${fails.length}`);
+    // disabled 控件不受 WCAG 1.4.3 约束, 不计入判定 (但仍打印, 便于发现"灰到看不见"的情况)
+    const fails = rows.filter((r) => !r.pass && !r.disabled);
+    const disabledFails = rows.filter((r) => !r.pass && r.disabled);
+    console.log(
+      `\n### 对比度 ${label} ${path} | 样本 ${rows.length} | 不合格 ${fails.length}` +
+        (disabledFails.length ? ` | disabled 不计 ${disabledFails.length}` : ''),
+    );
     const sorted = fails.sort((a, b) => a.ratio - b.ratio);
     for (const f of sorted) {
       console.log(
         `  FAIL ${String(f.ratio).padEnd(6)} <${f.need} fg=${f.fg} bg=${f.bg} alpha=${f.opacity} ${f.fs}px/${f.fw}` +
-          `${f.disabled ? ' [disabled]' : ''}${f.textured ? ' [纹理背景]' : ''} x${f.count} "${f.text}" ${f.sel}`,
+          `${f.textured ? ' [纹理背景]' : ''} x${f.count} "${f.text}" ${f.sel}`,
       );
     }
     // 也打印最低的 6 个及格项, 用于说明边界
@@ -137,5 +142,12 @@ for (const [path, label] of AUDIT_PAGES) {
         `  ok   ${String(p.ratio).padEnd(6)} >=${p.need} fg=${p.fg} bg=${p.bg} ${p.fs}px/${p.fw} x${p.count} "${p.text}" ${p.sel}`,
       );
     }
+    // 断言: 原来这里只打印不断言, 于是"找出 12 个不合格却显示 passed"(审计列出的假测试之一)。
+    // 纹理背景(竹纸纹理)会让取样偏保守, 这类仅记录不判罚, 避免误报。
+    const realFails = fails.filter((f) => !f.textured);
+    expect(
+      realFails.map((f) => `${f.ratio}:1 ${f.fs}px "${f.text}" ${f.sel}`),
+      `${label} 有 ${realFails.length} 处文字对比度不达标`,
+    ).toEqual([]);
   });
 }

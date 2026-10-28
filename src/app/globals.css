@@ -65,6 +65,15 @@ header a:hover {
   color: var(--color-vermillion);
 }
 
+/* 页脚次要导航的可点区域
+   实测(390×844): 「上游 / 卷末 / 反馈 / CC BY 4.0」只有 24×16, 高度不足
+   WCAG 2.2 AA(2.5.8) 要求的 24×24。用 inline-flex 撑高, 视觉排版不变。 */
+footer nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+
 /* 按钮基础 + 键盘可访问 */
 button {
   font-family: inherit;
