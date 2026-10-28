@@ -63,6 +63,8 @@ pnpm install
 pnpm dev            # 打开 http://localhost:3000
 ```
 
+> **环境要求**：Node **22.13+**（本项目用 pnpm 11，它要求到此版本；CI 与 Pages 工作流都用 Node 22）。
+
 想构建生产版本：`pnpm build && pnpm start`（`prebuild` 会检测到数据已存在并跳过联网同步）。
 
 > **本机起服请只监听本机**：`pnpm start -- -H 127.0.0.1`（或 `node node_modules/next/dist/bin/next start -H 127.0.0.1`）。
