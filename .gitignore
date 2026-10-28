@@ -10,6 +10,7 @@
 /playwright-report/
 /blob-report/
 /tests/screenshots/
+/tests/*.png
 
 # 本地起服/排查产生的日志 (此前根目录堆了 6 个 log, 已清理)
 *.log
