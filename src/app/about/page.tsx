@@ -8,7 +8,7 @@ import {
   syncChangeLabel,
 } from '@/lib/sync-info';
 
-const REPO = 'https://github.com/housheng-lu/housheng-lu';
+const REPO = 'https://github.com/odin1024/housheng-lu';
 
 export const metadata = {
   title: '卷末',
@@ -153,7 +153,7 @@ export default function AboutPage() {
         </p>
         <p className="leading-loose">
           本站问题请到{' '}
-          <a href="https://github.com/housheng-lu/housheng-lu/issues" target="_blank" rel="noopener">
+          <a href="https://github.com/odin1024/housheng-lu/issues" target="_blank" rel="noopener">
             反馈区
           </a>{' '}
           提 issue。

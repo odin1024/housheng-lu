@@ -28,7 +28,7 @@ https://github.com/eternity4719/HowToLiveBetter/issues
 - 翻译问题
 
 请到本仓库 issue 区：
-https://github.com/housheng-lu/housheng-lu/issues
+https://github.com/odin1024/housheng-lu/issues
 
 ---
 
@@ -135,7 +135,7 @@ V2.0 之后开放。
 
 如果你第一次参与开源, 推荐从这些入手：
 
-- [good first issue](https://github.com/housheng-lu/housheng-lu/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
+- [good first issue](https://github.com/odin1024/housheng-lu/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22)
 - 文档错别字
 - 翻译 README
 - 修复一个明显的样式 bug

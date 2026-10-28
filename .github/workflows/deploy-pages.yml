@@ -1,0 +1,82 @@
+name: Deploy to GitHub Pages
+
+# 公网访问: https://<owner>.github.io/<repo>/
+#
+# 说明:
+#   · GitHub Pages 只能托管**静态**站点, 所以这里做静态导出(output: 'export')。
+#   · 静态导出不支持 route handler → 构建前把 src/app/api 临时移走;
+#     此时 /ask 的 AI 部分自动降级为纯检索(页面会显示「未启用（纯检索）」), 站点功能完整。
+#   · 想在公网用 AI, 请用支持 Node 运行时的托管(Vercel / 自建 Node), 见 README「部署」。
+#   · 需要在仓库 Settings → Pages 里把 Source 设为 "GitHub Actions"。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 合规检查
+        run: pnpm verify
+
+      # 静态导出前移走 API 路由 (route handler 无法静态化)
+      - name: 备份并移除 API 路由
+        run: |
+          mkdir -p /tmp/api-backup
+          if [ -d src/app/api ]; then mv src/app/api /tmp/api-backup/; fi
+
+      - name: 静态导出
+        env:
+          NEXT_OUTPUT: export
+          NEXT_BASE_PATH: /${{ github.event.repository.name }}
+          NEXT_TELEMETRY_DISABLED: 1
+        run: pnpm build
+
+      # 单页路由的兜底(静态站点直接访问子路径时 404 的兜底页)
+      - name: 生成 404 兜底
+        run: |
+          if [ -f out/404.html ]; then cp out/404.html out/404.html.bak || true; fi
+          ls out | head -20
+
+      - name: 关闭 Jekyll (否则 _next 目录会被忽略)
+        run: touch out/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

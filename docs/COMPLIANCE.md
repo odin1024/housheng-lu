@@ -189,7 +189,7 @@ CC BY 4.0 允许商用, 但厚生錄:
 
 如发现合规问题或内容错误：
 
-- GitHub Issues: github.com/housheng-lu/housheng-lu/issues
+- GitHub Issues: github.com/odin1024/housheng-lu/issues
 - 紧急安全问题: security@housheng.lu (待配置)
 - 内容错误: 同步上游 issue tracker (原作者维护)
 

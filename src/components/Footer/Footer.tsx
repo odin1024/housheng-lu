@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { attribution } from '@/lib/compliance';
 
 export function Footer() {
@@ -38,10 +39,11 @@ export function Footer() {
               上游
             </a>
             <span aria-hidden>·</span>
-            <a href="/about">卷末</a>
+            {/* 用 Link 而非原生 <a>: 静态托管带 basePath 时, 根相对 href 会 404 */}
+            <Link href="/about">卷末</Link>
             <span aria-hidden>·</span>
             <a
-              href="https://github.com/housheng-lu/housheng-lu/issues"
+              href="https://github.com/odin1024/housheng-lu/issues"
               target="_blank"
               rel="noopener noreferrer"
             >

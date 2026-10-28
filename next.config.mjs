@@ -1,5 +1,26 @@
 /** @type {import('next').NextConfig} */
+
+/**
+ * 静态导出模式（用于 GitHub Pages 这类纯静态托管）
+ *
+ * 用法: NEXT_OUTPUT=export NEXT_BASE_PATH=/housheng-lu pnpm build
+ *   · output: 'export'   → 产物在 out/，可直接丢给静态托管
+ *   · basePath           → 项目站点部署在 /<repo>/ 子路径下时需要
+ *   · trailingSlash      → 让 /explore 落地成 /explore/index.html，静态托管才找得到
+ * 注意: 静态导出**不支持** route handler，部署前要把 src/app/api 暂时移走
+ *      （GitHub Pages 工作流里已经这么做；AI 问答那时自动降级为纯检索）
+ */
+const isExport = process.env.NEXT_OUTPUT === 'export';
+const basePath = process.env.NEXT_BASE_PATH || '';
+
 const nextConfig = {
+  ...(isExport
+    ? {
+        output: 'export',
+        ...(basePath ? { basePath } : {}),
+        trailingSlash: true,
+      }
+    : {}),
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,

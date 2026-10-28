@@ -109,7 +109,11 @@ export default function AskPage() {
     fetch('/api/ask')
       .then((r) => r.json())
       .then((d) => setAiConfig(d.ai))
-      .catch(() => setAiConfig(null));
+      // 接口不可用(静态托管 / 服务异常 / 离线)时按「未启用」处理:
+      // 否则设置面板会永远停在「检测中…」, 读者以为页面坏了
+      .catch(() =>
+        setAiConfig({ baseConfigured: false, serverKey: false, byok: false, customBase: false, models: [], defaultModel: '' }),
+      );
     setUserKey(getAskKey());
     setUserModel(getAskModel());
     setUserBase(getAskBase());

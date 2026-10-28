@@ -56,7 +56,7 @@
 **数据随仓库提供**，所以克隆后即可构建，**不需要联网**：
 
 ```bash
-git clone https://github.com/housheng-lu/housheng-lu.git
+git clone https://github.com/odin1024/housheng-lu.git
 cd housheng-lu
 
 pnpm install
@@ -88,15 +88,39 @@ pnpm dev            # 打开 http://localhost:3000
 
 ### 部署
 
-`/api/ask` 声明了 `runtime = 'nodejs'`，其 SSRF 校验用到 `node:dns` 与 `node:net`，
-因此**需要支持 Node 运行时的托管**：
+两种形态，按需要选：
+
+#### A. GitHub Pages（零成本公网访问，纯静态）
+
+推送到 `main` 后由 `.github/workflows/deploy-pages.yml` 自动构建并发布：
+
+```
+https://<用户名>.github.io/housheng-lu/
+```
+
+启用只需两步：
+1. 仓库 **Settings → Pages → Source** 选 **GitHub Actions**
+2. 推一次 `main`（或在 Actions 里手动跑一次 Deploy to GitHub Pages）
+
+本地预览同一份静态产物：
+
+```bash
+mv src/app/api /tmp/api-backup                                # 静态导出不支持 route handler
+NEXT_OUTPUT=export NEXT_BASE_PATH=/housheng-lu pnpm build     # 产物在 out/
+```
+
+> 静态托管下**没有 AI 问答**（页面自动显示「未启用（纯检索）」；检索/急方/矩阵/海报/我的全部可用）。
+> 想在公网也能 AI 回答，用下面的 B。
+
+#### B. 支持 Node 运行时的托管（含 AI）
+
+`/api/ask` 声明了 `runtime = 'nodejs'`，其 SSRF 校验用到 `node:dns` 与 `node:net`，因此**需要 Node 运行时**：
 
 | 方案 | 支持 API 路由 | 说明 |
 |---|---|---|
 | **Vercel**（推荐）| ✅ | Next.js 原生支持，环境变量在项目设置里配 |
 | **自建 Node** | ✅ | `pnpm build && pnpm start -p 3000`，前面挂 Nginx/CDN |
-| Cloudflare Pages | ❌ 当前不可用 | 需要 `@cloudflare/next-on-pages`，且 Workers 边缘运行时没有 `node:dns` → **要先改写 AI 路由或关闭 AI** |
-| 纯静态导出 | ❌ | `/api/ask` 是动态接口，`output: 'export'` 会把它去掉 |
+| Cloudflare Pages | ❌ 当前不可用 | 需要 `@cloudflare/next-on-pages`，且 Workers 边缘运行时没有 `node:dns` → 要先改写 AI 路由或关闭 AI |
 
 > 本仓库**不内置 deploy workflow**（原来的 Cloudflare 版本结构上不可能成功，已删除）。
 > 部署时记得：① 在托管平台单独配置 AI 环境变量（云平台不会读你本地的 `.env.local`）；

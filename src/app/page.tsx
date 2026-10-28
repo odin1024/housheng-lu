@@ -31,7 +31,7 @@ export default function HomePage() {
     author: {
       '@type': 'Organization',
       name: '厚生錄 Contributors',
-      url: 'https://github.com/housheng-lu/housheng-lu',
+      url: 'https://github.com/odin1024/housheng-lu',
     },
     sourceOrganization: {
       '@type': 'Organization',
@@ -48,6 +48,28 @@ export default function HomePage() {
         // 转义 '<' : 防止今后把动态数据放进 JSON-LD 时 </script> 逃逸成 XSS
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
+
+      {/* 开源宣传横幅
+          按"卷首题识"处理, 不做现代 SaaS 大色块: 竹纸底 + 朱砂小印 + 一行小字。
+          对比度实测 ink-soft/bg 5.25:1、seal/bg 6.41:1、vermillion/bg 6.25:1, 均达 AA;
+          链接给 24px 最小可点高度 (WCAG 2.2 AA 2.5.8)。 */}
+      <aside aria-label="开源信息" className="border-b border-border bg-bg">
+        <div className="max-w-wide mx-auto px-4 md:px-6 py-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs md:text-sm">
+          <span className="px-1.5 py-0.5 border border-seal text-seal text-[10px] md:text-[11px] tracking-guo-sm">
+            开源
+          </span>
+          <span className="text-ink-soft">代码 MIT · 正文 CC BY 4.0 · 可自建、可离线</span>
+          <span aria-hidden className="hidden sm:inline text-ink-soft">·</span>
+          <a
+            href="https://github.com/odin1024/housheng-lu"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center min-h-[24px] text-vermillion underline underline-offset-2 hover:text-seal"
+          >
+            在 GitHub 上查看 ↗
+          </a>
+        </div>
+      </aside>
 
       {/* Hero */}
       <section className="border-b border-border bg-bg-alt">
