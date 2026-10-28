@@ -21,6 +21,9 @@ const nextConfig = {
         trailingSlash: true,
       }
     : {}),
+  // 构建期把 basePath 注入客户端 (供 lib/site-meta 的 asset() 使用):
+  // Next 只会给 _next 产物和 <Link> 路由自动加前缀, 原生 <img src="/..."> 不会。
+  env: { NEXT_PUBLIC_BASE_PATH: basePath },
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,

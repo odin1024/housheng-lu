@@ -6,6 +6,7 @@ import { EMERGENCY_SCENARIOS } from '@/lib/emergency-scenarios';
 import { pickDaily } from '@/lib/daily-pick';
 import { evidenceLabel, ratioLabel, caliberLabel } from '@/lib/labels';
 import { LIFE_STAGES, UNIVERSAL_SECTIONS } from '@/lib/life-stages';
+import { asset } from '@/lib/site-meta';
 
 /** 章节号 → 标题 (卡片上要写出该阶段的专属章节名) */
 const sectionTitle = new Map(allSections.map((s) => [s.id, s.title]));
@@ -76,7 +77,7 @@ export default function HomePage() {
         <div className="max-w-wide mx-auto px-4 md:px-6 py-10 md:py-14 text-center">
           <div className="mb-3 md:mb-4 flex justify-center">
             <img
-              src="/logo/seal-end.svg"
+              src={asset('/logo/seal-end.svg')}
               alt="厚生錄"
               width={130}
               height={60}

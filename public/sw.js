@@ -2,11 +2,23 @@
 // 策略:
 //   - 急救 + 单节页: 网络优先, 失败用缓存
 //   - 静态资源: 缓存优先
-//   - 其他页面: 网络优先, 失败返回 /offline.html
+//   - 其他页面: 网络优先, 失败返回 offline.html
 // 任何 404 不阻断其他资源缓存
+//
+// 关于 basePath:
+//   本站既可能部署在域名根(自建 Node / Vercel), 也可能部署在子路径
+//   (GitHub Pages: /housheng-lu/)。写死 '/' 开头的路径在子路径部署下**全部 404**,
+//   所以这里从 self.registration.scope 推导 BASE, 所有内部路径都经过 u()。
 
-const CACHE_NAME = 'housheng-lu-v8';
-const RUNTIME_CACHE = 'housheng-lu-runtime-v8';
+const CACHE_NAME = 'housheng-lu-v9';
+const RUNTIME_CACHE = 'housheng-lu-runtime-v9';
+
+/** '' 或 '/housheng-lu' */
+const BASE = new URL(self.registration.scope).pathname.replace(/\/$/, '');
+/** 拼内部路径 */
+const u = (p) => BASE + p;
+/** 把绝对路径name 还原成"相对站点根"的形式, 便于匹配 */
+const rel = (pathname) => (BASE && pathname.startsWith(BASE) ? pathname.slice(BASE.length) || '/' : pathname);
 
 const PRECACHE_URLS = [
   '/',
@@ -17,9 +29,9 @@ const PRECACHE_URLS = [
   '/logo/seal-square.svg',
   '/manifest.json',
   '/offline.html',
-];
+].map(u);
 
-// 静态资源路径模式
+// 静态资源路径模式 (基于去掉 BASE 后的相对路径)
 const STATIC_PATTERNS = [
   /^\/_next\/static\//,
   /^\/logo\//,
@@ -94,24 +106,27 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
+  // 站点范围之外的请求不管 (同域但不是本站路径)
+  const path = rel(url.pathname);
+
   // API 一律不缓存 (健康检查等动态响应不该进缓存)
-  if (url.pathname.startsWith('/api/')) return;
+  if (path.startsWith('/api/')) return;
 
   // 急救 + 单节: 网络优先
-  if (url.pathname.startsWith('/emergency/') || url.pathname.startsWith('/book/')) {
+  if (path.startsWith('/emergency/') || path.startsWith('/book/')) {
     event.respondWith(networkFirst(request));
     return;
   }
 
   // 构建产物 (JS/CSS chunk): 必须网络优先
   // 缓存优先会拿到旧 chunk, 和新页面里的引用对不上 → "Cannot read properties of undefined (reading 'call')"
-  if (url.pathname.startsWith('/_next/')) {
+  if (path.startsWith('/_next/')) {
     event.respondWith(networkFirst(request));
     return;
   }
 
   // 其他静态资源 (logo/图标/字体): 缓存优先, 快且稳
-  if (STATIC_PATTERNS.some((re) => re.test(url.pathname))) {
+  if (STATIC_PATTERNS.some((re) => re.test(path))) {
     event.respondWith(cacheFirst(request));
     return;
   }
@@ -120,7 +135,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(request).catch(async () => {
       const cached = await caches.match(request);
-      return cached || caches.match('/offline.html');
+      return cached || caches.match(u('/offline.html'));
     }),
   );
 });
@@ -136,7 +151,7 @@ async function networkFirst(request) {
   } catch (err) {
     const cached = await caches.match(request);
     if (cached) return cached;
-    return caches.match('/offline.html');
+    return caches.match(u('/offline.html'));
   }
 }
 
@@ -152,7 +167,7 @@ async function cacheFirst(request) {
     return response;
   } catch (err) {
     // 静态资源失败, 返回 offline 页
-    const offline = await caches.match('/offline.html');
+    const offline = await caches.match(u('/offline.html'));
     if (offline) return offline;
     return new Response('Offline', { status: 504 });
   }

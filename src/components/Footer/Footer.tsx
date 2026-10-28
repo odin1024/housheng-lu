@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { attribution } from '@/lib/compliance';
+import { asset } from '@/lib/site-meta';
 
 export function Footer() {
   return (
@@ -26,7 +27,7 @@ export function Footer() {
 
           <div className="flex justify-center my-6">
             <img
-              src="/logo/seal-end.svg"
+              src={asset('/logo/seal-end.svg')}
               alt="厚生錄 落款印"
               width={120}
               height={40}

@@ -63,6 +63,16 @@ jobs:
           if [ -f out/404.html ]; then cp out/404.html out/404.html.bak || true; fi
           ls out | head -20
 
+      # public/manifest.json 是静态文件, 里面的 start_url / icons 是根相对路径,
+      # 部署到 /<repo>/ 子路径下会指向域名根 → PWA 安装与图标失效。这里就地加前缀。
+      - name: 修正 manifest 的子路径
+        run: |
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          if [ -f out/manifest.json ]; then
+            sed -i "s|\(\"start_url\": *\"\)/|\1/${REPO_NAME}/|; s|\(\"src\": *\"\)/|\1/${REPO_NAME}/|g; s|\(\"scope\": *\"\)/|\1/${REPO_NAME}/|" out/manifest.json
+            echo "--- manifest 修正后 ---"; cat out/manifest.json
+          fi
+
       - name: 关闭 Jekyll (否则 _next 目录会被忽略)
         run: touch out/.nojekyll
 

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { asset } from '@/lib/site-meta';
 
 // 导航项 (桌面 + 移动共用一份, 避免两处不一致)
 // 卷端 = 首页 (本站古籍用语: 卷端即卷首), 与首页结卷标记「厚生錄 · 卷端 」呼应
@@ -73,7 +74,8 @@ export function Header() {
           className="flex items-center gap-3 no-underline"
           aria-label="厚生錄 首页"
         >
-          <img src="/logo/seal-square.svg" alt="" width={36} height={50} className="md:w-[44px] md:h-[60px]" />
+          {/* asset(): 部署在子路径时原生 <img> 不会自动加 basePath, 会 404 */}
+          <img src={asset('/logo/seal-square.svg')} alt="" width={36} height={50} className="md:w-[44px] md:h-[60px]" />
           <div className="flex flex-col leading-tight">
             <span
               className="text-lg font-bold tracking-guo"

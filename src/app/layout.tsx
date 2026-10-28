@@ -6,6 +6,7 @@ import { ServiceWorkerRegistrar } from '@/components/ServiceWorkerRegistrar';
 import { ToastContainer } from '@/components/Toast/Toast';
 import { ScrollToTop } from '@/components/ScrollToTop/ScrollToTop';
 import { attribution } from '@/lib/compliance';
+import { asset } from '@/lib/site-meta';
 
 export const metadata: Metadata = {
   title: {
@@ -39,10 +40,10 @@ export const metadata: Metadata = {
     description: attribution.projectSubtitle,
   },
   icons: {
-    icon: '/favicon.svg',
-    apple: '/logo/seal-square.svg',
+    icon: asset('/favicon.svg'),
+    apple: asset('/logo/seal-square.svg'),
   },
-  manifest: '/manifest.json',
+  manifest: asset('/manifest.json'),
   alternates: {
     canonical: '/',
   },
