@@ -2,6 +2,7 @@
   "name": "housheng-lu",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@11.2.2",
   "description": "厚生錄 — 《高性价比人生指南》视觉化再刊本",
   "license": "(CC-BY-4.0 AND MIT)",
   "scripts": {
