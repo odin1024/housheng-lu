@@ -37,9 +37,9 @@ test('已部署站点可用性 (资源/basePath/横幅/深页)', async ({ page }
     expect(bad, `这些链接没带 basePath: ${bad.slice(0, 5).join(', ')}`).toEqual([]);
   }
 
-  // 3) 客户端路由跳转
+  // 3) 客户端路由跳转 (线上要下 /explore 的 2.4MB 客户端包, 用等待而不是固定 sleep)
   await page.locator('header a[href*="/explore"]').first().click();
-  await page.waitForTimeout(1500);
+  await expect(page.locator('.entry-card').first()).toBeVisible({ timeout: 45_000 });
   expect(await page.locator('.entry-card').count()).toBeGreaterThan(0);
 
   // 4) 深页(条目详情)
