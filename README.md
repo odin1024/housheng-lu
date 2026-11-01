@@ -68,6 +68,10 @@
 | ![海报](docs/assets/shot-poster.png) | ![手机端](docs/assets/shot-home-mobile.png) |
 | 方版 / 横版 / 竖版三种版式，导出 PNG 自带署名 | 单列排版、触控目标 ≥24px、可离线安装为 PWA |
 
+| 手机端 · 急方 | 离线优先（PWA） |
+| :--: | :--: |
+| ![手机端急方](docs/assets/shot-emergency-mobile.png) | **Service Worker 预缓存**<br>急救场景与主要页面首访即进缓存，断网也能打开<br>可「添加到主屏幕」当原生应用用<br><br>子路径部署（如 GitHub Pages）时<br>缓存路径由 `registration.scope` 推导<br>不会把域名根误当站点根 |
+
 ## 与原书的关系
 
 按 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) 协议衍生，已尽到三项义务：
