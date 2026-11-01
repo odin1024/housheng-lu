@@ -1,6 +1,5 @@
 // 生成 README 用的宣传物料: 横幅 + 各页面截图 (产物写入 docs/assets/, 需先 pnpm build && pnpm start)
 import { test } from '@playwright/test';
-import { pathToFileURL } from 'node:url';
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 
@@ -22,8 +21,14 @@ function dataCounts() {
 
 test('渲染宣传横幅', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 420 });
-  const url = pathToFileURL(join(process.cwd(), 'tests', 'fixtures', 'readme-banner.html')).href;
-  await page.goto(url, { waitUntil: 'networkidle' });
+
+  // fixture 里的 <img src="public/logo/..."> 是相对路径, 而 fixture 在 tests/fixtures/ 下;
+  // 且 setContent 在 about:blank 里加载 file:// 子资源会被拦, 所以直接把 SVG 内联成 data URL。
+  const fixturePath = join(process.cwd(), 'tests', 'fixtures', 'readme-banner.html');
+  const logoSvg = readFileSync(join(process.cwd(), 'public', 'logo', 'seal-end.svg'), 'utf-8');
+  const logoDataUrl = `data:image/svg+xml;base64,${Buffer.from(logoSvg).toString('base64')}`;
+  const html = readFileSync(fixturePath, 'utf-8').replace('public/logo/seal-end.svg', logoDataUrl);
+  await page.setContent(html, { waitUntil: 'load' });
 
   // 用真实数据覆盖 HTML 里的占位数字
   const counts = dataCounts();
