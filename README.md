@@ -1,12 +1,30 @@
+<div align="center">
+
+![厚生錄 · 七百余条生计，都在案头](docs/assets/banner.png)
+
+**《高性价比人生指南》的视觉化再刊本** —— 765 条循证生活建议，每条写明花掉什么、换回什么、证据有多硬。
+
+[![线上访问](https://img.shields.io/badge/线上访问-odin1024.github.io%2Fhousheng--lu-A82A20?style=flat-square)](https://odin1024.github.io/housheng-lu/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square)](https://nextjs.org/)
+[![正文](https://img.shields.io/badge/正文-CC%20BY%204.0-blue?style=flat-square)](https://creativecommons.org/licenses/by/4.0/)
+[![代码](https://img.shields.io/badge/代码-MIT-green?style=flat-square)](LICENSE-CODE)
+[![同步](https://img.shields.io/badge/同步-每日%2006:00%20UTC-brightgreen?style=flat-square)](.github/workflows/sync.yml)
+
+[**打开线上版 ↗**](https://odin1024.github.io/housheng-lu/) ·
+[预览](#预览) ·
+[主要功能](#主要功能) ·
+[快速开始](#快速开始) ·
+[部署](#部署) ·
+[安全说明](SECURITY.md)
+
+</div>
+
+---
+
 # 厚生錄
 
 > **《高性价比人生指南》视觉化再刊本**
 > 七百条生计，都在案头。
-
-[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
-[![License: CC BY 4.0](https://img.shields.io/badge/正文-CC%20BY%204.0-blue)](https://creativecommons.org/licenses/by/4.0/)
-[![Code: MIT](https://img.shields.io/badge/代码-MIT-green)](LICENSE-CODE)
-[![Sync Status](https://img.shields.io/badge/同步-每日%2006:00%20UTC-brightgreen)](.github/workflows/sync.yml)
 
 ---
 
@@ -14,12 +32,41 @@
 
 **厚生錄** 是开源电子书《[高性价比人生指南](https://github.com/eternity4719/HowToLiveBetter)》的**视觉化再刊本**。
 
-原书以 Markdown 形式收录了 699 条循证生活建议，每条写明成本、收益、证据等级与原始出处。
+原书以 Markdown 形式收录了 765 条循证生活建议，每条写明成本、收益、证据等级与原始出处。
 本项目在不改动原书内容的前提下，将其重新设计为一部**可以翻阅、可以筛查、可以离线急救**的现代古籍善本。
 
 气质上，本项目定位为：
 
 > **循证生活的古籍善本，不是工具站。**
+
+## 预览
+
+> 以下截图由 `tests/shots-readme.spec.ts` 自动生成（输出到 `docs/assets/`），界面改动后跑一次即可重拍。
+
+| 卷端（首页） | 长卷（136 颗印章 · 34 章） |
+| :--: | :--: |
+| [![卷端](docs/assets/shot-home.png)](https://odin1024.github.io/housheng-lu/) | [![长卷](docs/assets/shot-scroll.png)](https://odin1024.github.io/housheng-lu/) |
+| 卷首题识式的排版；开源横幅、三枚数字、长卷横轴 | 装裱成卷轴：可拖动、可点印章直达条目，色条为章节口径 |
+
+| 人生阶段 | 检索 |
+| :--: | :--: |
+| ![人生阶段](docs/assets/shot-stages.png) | ![检索](docs/assets/shot-explore.png) |
+| 通用 9 章 + 各阶段专属（34 章不重不漏）；首屏即该阶段内容 | 765 条按章节 / 证据等级 / 成本 / 口径筛选，长按可展开全文 |
+
+| 问卷（AI 回答） | 急方（12 个场景） |
+| :--: | :--: |
+| ![问卷](docs/assets/shot-ask.png) | ![急方](docs/assets/shot-emergency.png) |
+| 回答只引用原书条目（正文标 13-01 等编号），编造会被服务端丢弃并降级 | 心脏骤停 / 大出血 / 噎住 等，离线可用，不依赖网络 |
+
+| 急方详情 | 决策矩阵 |
+| :--: | :--: |
+| ![急方详情](docs/assets/shot-emergency-detail.png) | ![矩阵](docs/assets/shot-matrix.png) |
+| 分步、大字、可一键拨打；每条都标注来自原书哪一节 | 证据等级 × 成本折算，格子点开即条目；口径取自原书章节属性 |
+
+| 海报生成 | 手机端（390px） |
+| :--: | :--: |
+| ![海报](docs/assets/shot-poster.png) | ![手机端](docs/assets/shot-home-mobile.png) |
+| 方版 / 横版 / 竖版三种版式，导出 PNG 自带署名 | 单列排版、触控目标 ≥24px、可离线安装为 PWA |
 
 ## 与原书的关系
 
