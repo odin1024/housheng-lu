@@ -2,17 +2,41 @@
 import { test } from '@playwright/test';
 import { pathToFileURL } from 'node:url';
 import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
 
 const BASE = 'http://127.0.0.1:3000';
 const OUT = 'docs/assets';
+
+/** 从数据里读真实数字, 避免横幅上的数字随上游同步而过时 */
+function dataCounts() {
+  const entries = JSON.parse(readFileSync('data/entries.json', 'utf-8')) as Array<{
+    section: number;
+    evidenceLevel: string;
+  }>;
+  return {
+    total: entries.length,
+    sections: new Set(entries.map((e) => e.section)).size,
+    evidenceA: entries.filter((e) => e.evidenceLevel === 'A').length,
+  };
+}
 
 test('渲染宣传横幅', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 420 });
   const url = pathToFileURL(join(process.cwd(), 'tests', 'fixtures', 'readme-banner.html')).href;
   await page.goto(url, { waitUntil: 'networkidle' });
-  await page.waitForTimeout(600);
+
+  // 用真实数据覆盖 HTML 里的占位数字
+  const counts = dataCounts();
+  await page.evaluate((c) => {
+    const nums = document.querySelectorAll('.stat .n');
+    [c.total, c.sections, c.evidenceA].forEach((v, i) => {
+      if (nums[i]) nums[i].textContent = String(v);
+    });
+  }, counts);
+
+  await page.waitForTimeout(400);
   await page.screenshot({ path: `${OUT}/banner.png` });
-  console.log('   ✅ banner.png');
+  console.log(`   ✅ banner.png (${counts.total} 条 / ${counts.sections} 章 / ${counts.evidenceA} 条 A 级)`);
 });
 
 test('桌面端页面截图', async ({ page }) => {
