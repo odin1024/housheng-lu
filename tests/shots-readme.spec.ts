@@ -44,6 +44,19 @@ test('渲染宣传横幅', async ({ page }) => {
   console.log(`   ✅ banner.png (${counts.total} 条 / ${counts.sections} 章 / ${counts.evidenceA} 条 A 级)`);
 });
 
+test('渲染社交分享卡片 (og:image, 1200x630)', async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 630 });
+  const fixturePath = join(process.cwd(), 'tests', 'fixtures', 'og-image.html');
+  const logoSvg = readFileSync(join(process.cwd(), 'public', 'logo', 'seal-end.svg'), 'utf-8');
+  const logoDataUrl = `data:image/svg+xml;base64,${Buffer.from(logoSvg).toString('base64')}`;
+  const html = readFileSync(fixturePath, 'utf-8').replace('public/logo/seal-end.svg', logoDataUrl);
+  await page.setContent(html, { waitUntil: 'load' });
+  await page.waitForTimeout(300);
+  // 直接写进 public/: 站点与社交平台都按 /og-image.png 访问
+  await page.screenshot({ path: 'public/og-image.png' });
+  console.log('   ✅ public/og-image.png');
+});
+
 test('桌面端页面截图', async ({ page }) => {
   test.setTimeout(240_000);
   await page.setViewportSize({ width: 1280, height: 800 });

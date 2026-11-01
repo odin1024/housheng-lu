@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root {
+        --bg: #f2e8d5;
+        --ink: #2a2418;
+        --ink-soft: #6b5d4a;
+        --seal: #a82a20;
+        --vermillion: #8b3a3a;
+        --zh: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        width: 1200px;
+        height: 630px;
+        background: var(--bg);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cline x1='0' y1='0' x2='120' y2='120' stroke='%23E8DCC0' stroke-width='0.5' opacity='0.5'/%3E%3Cline x1='120' y1='0' x2='0' y2='120' stroke='%23E8DCC0' stroke-width='0.5' opacity='0.5'/%3E%3C/svg%3E");
+        font-family: var(--zh);
+        color: var(--ink);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      /* 上下装裱边（卷轴天地头） */
+      body::before,
+      body::after {
+        content: '';
+        position: absolute;
+        left: 0; right: 0; height: 12px;
+        background: linear-gradient(90deg, #b08a5a, #8a6a42 50%, #b08a5a);
+      }
+      body::before { top: 0; }
+      body::after { bottom: 0; }
+
+      .seal img { width: 96px; height: auto; margin-bottom: 18px; }
+      h1 {
+        font-size: 96px;
+        letter-spacing: 0.16em;
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 20px;
+      }
+      .tagline { font-size: 30px; color: var(--vermillion); letter-spacing: 0.1em; margin-bottom: 10px; }
+      .sub { font-size: 17px; color: var(--ink-soft); font-style: italic; margin-bottom: 26px; }
+      .rule { width: 260px; height: 1px; background: var(--seal); margin: 0 auto 26px; }
+      .meta { font-size: 17px; color: var(--ink-soft); line-height: 1.9; }
+      .meta .url { color: var(--vermillion); }
+      .badge {
+        position: absolute;
+        right: 46px;
+        top: 46px;
+        border: 1px solid var(--seal);
+        color: var(--seal);
+        padding: 5px 12px;
+        font-size: 14px;
+        letter-spacing: 0.24em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="badge">开源</div>
+    <div class="seal"><img src="public/logo/seal-end.svg" alt="" /></div>
+    <h1>厚生錄</h1>
+    <div class="tagline">七百余条生计，都在案头。</div>
+    <div class="sub">HouSheng Lu · Records of Living Well</div>
+    <div class="rule"></div>
+    <div class="meta">
+      《高性价比人生指南》视觉化再刊本 · 正文 CC BY 4.0 · 代码 MIT<br />
+      <span class="url">odin1024.github.io/housheng-lu</span>
+    </div>
+  </body>
+</html>

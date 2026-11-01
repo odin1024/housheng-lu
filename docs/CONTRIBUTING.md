@@ -110,19 +110,46 @@ Logo 是项目核心资产，修改前请：
 
 ---
 
-## 四、翻译
+## 四、重拍 README 素材（横幅 / 截图 / 分享卡）
+
+README 里的图片是**自动生成**的，界面改动后需要重拍，否则截图会和实际界面不一致。
+
+```bash
+# 1) 先构建并起生产服务（脚本会访问 http://127.0.0.1:3000）
+pnpm build
+node node_modules/next/dist/bin/next start -p 3000 -H 127.0.0.1
+
+# 2) 一次性重拍全部素材
+npx playwright test shots-readme --workers=1
+```
+
+| 产物 | 说明 |
+|---|---|
+| `docs/assets/banner.png` | 仓库首页横幅（1280×420）。**数字自动从 `data/entries.json` 读取**，上游同步后不用手改 |
+| `docs/assets/shot-*.png` | 各页面截图（桌面 1280 宽 + 手机 390 宽） |
+| `public/og-image.png` | 社交分享卡片（1200×630），由 `layout.tsx` 的 `openGraph.images` 引用 |
+
+设计源在 `tests/fixtures/readme-banner.html` 与 `tests/fixtures/og-image.html`（改样式就改这两个文件）。
+落款印走内联 data URL —— 因为 fixture 在 `tests/fixtures/` 下，相对路径 `public/logo/*.svg` 会失效。
+
+> 提交前建议跑 `npx playwright test check-deployed --workers=1`（配 `PUBLIC_BASE_URL`）：
+> 它能抓到"子路径部署时根相对资源 404"这类只有上线才会暴露的问题。
+
+---
+
+## 五、翻译
 
 V2.0 之后开放。
 
 ---
 
-## 五、安全问题
+## 六、安全问题
 
 不要在 issue 区公开安全漏洞。请私下联系维护者邮箱（待配置）。
 
 ---
 
-## 六、行为准则
+## 七、行为准则
 
 - 尊重他人
 - 建设性讨论
@@ -131,7 +158,7 @@ V2.0 之后开放。
 
 ---
 
-## 七、第一次贡献者友好
+## 八、第一次贡献者友好
 
 如果你第一次参与开源, 推荐从这些入手：
 

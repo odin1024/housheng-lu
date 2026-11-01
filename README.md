@@ -19,6 +19,31 @@
 
 </div>
 
+<details>
+<summary><b>English</b> — what is this?</summary>
+
+<br />
+
+**HouSheng Lu** (厚生錄) is a **visual re-publication** of the open-source ebook
+*How to Live Better* (《高性价比人生指南》, CC BY 4.0) — 767 life tips, each stating its
+cost, benefit, evidence grade and original source.
+
+The original book is plain Markdown. This project re-typesets it as a browsable,
+searchable, **offline-capable** piece of Chinese-classic book design:
+
+- **Long scroll** — 136 seals across 34 chapters, drag / click to jump straight to an entry
+- **Faceted search** — filter by chapter, evidence level, cost and "caliber"
+- **Life stages** — 9 universal chapters + per-stage exclusive chapters (34 in total, no overlap)
+- **Emergency PWA** — 12 first-aid scenarios, usable with no network
+- **Ask page** — answers *only* from the book's entries, printing the cited entry IDs
+  (e.g. `13-01`); server-side verification discards any answer citing entries that don't exist
+- **Decision matrix & poster generator** — cost × chapter caliber grid; exportable PNG posters
+
+Live site: **https://odin1024.github.io/housheng-lu/** · Code MIT · Text CC BY 4.0 ·
+Unofficial derivative, not affiliated with the original author.
+
+</details>
+
 ---
 
 # 厚生錄

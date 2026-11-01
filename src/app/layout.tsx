@@ -8,6 +8,18 @@ import { ScrollToTop } from '@/components/ScrollToTop/ScrollToTop';
 import { attribution } from '@/lib/compliance';
 import { asset } from '@/lib/site-meta';
 
+/**
+ * 站点来源(origin)
+ *
+ * 为什么不用固定域名: 本项目有多种部署形态(根域名自建 / GitHub Pages 子路径)。
+ * metadataBase 只放 origin, 路径部分用 asset() 带上 basePath —— 否则会拼成
+ * https://host/housheng-lu/housheng-lu/og-image.png 这种重复前缀。
+ * 自建时用 NEXT_PUBLIC_SITE_ORIGIN 覆盖。
+ */
+const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_ORIGIN || 'https://odin1024.github.io';
+/** 站点首页的完整 URL (含 basePath) */
+const SITE_URL = `${SITE_ORIGIN}${asset('/')}`;
+
 export const metadata: Metadata = {
   title: {
     default: `${attribution.projectName} · ${attribution.projectTagline}`,
@@ -17,20 +29,21 @@ export const metadata: Metadata = {
   keywords: ['高性价比人生指南', '循证', '生活指南', '厚生錄', 'HowToLiveBetter', 'HouSheng Lu'],
   authors: [{ name: '厚生錄 Contributors' }],
   creator: '厚生錄 Contributors',
-  metadataBase: new URL('https://housheng.lu'),
+  metadataBase: new URL(SITE_ORIGIN),
   openGraph: {
     type: 'website',
     locale: 'zh_CN',
-    url: 'https://housheng.lu',
+    url: SITE_URL,
     siteName: attribution.projectName,
     title: `${attribution.projectName} · ${attribution.projectTagline}`,
     description: attribution.projectSubtitle,
+    // 分享卡片: public/og-image.png (1200x630, 由 tests/shots-readme.spec.ts 生成)
     images: [
       {
-        url: '/og/og-default.svg',
+        url: asset('/og-image.png'),
         width: 1200,
         height: 630,
-        alt: attribution.projectName,
+        alt: `${attribution.projectName} · ${attribution.projectTagline}`,
       },
     ],
   },
@@ -38,6 +51,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: attribution.projectName,
     description: attribution.projectSubtitle,
+    images: [asset('/og-image.png')],
   },
   icons: {
     icon: asset('/favicon.svg'),
@@ -45,7 +59,7 @@ export const metadata: Metadata = {
   },
   manifest: asset('/manifest.json'),
   alternates: {
-    canonical: '/',
+    canonical: SITE_URL,
   },
   other: {
     'theme-color': '#B73229',
