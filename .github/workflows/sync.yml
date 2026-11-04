@@ -12,6 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    # 供下面的 deploy job 判断"数据到底有没有变"
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,6 +49,7 @@ jobs:
           fi
 
       - name: 提交变更
+        id: commit
         if: steps.check.outputs.changed == 'true'
         run: |
           git config user.name "housheng-lu-bot"
@@ -53,3 +57,22 @@ jobs:
           git add data/
           git commit -m "chore(sync): upstream @ $(cd content/upstream && git rev-parse --short HEAD)"
           git push
+          echo "pushed=true" >> $GITHUB_OUTPUT
+
+      - name: 有数据变更时未能推送
+        if: steps.check.outputs.changed == 'true' && steps.commit.outputs.pushed != 'true'
+        run: |
+          echo "数据有变更但未能推送, 跳过部署"
+          exit 1
+
+  # 数据变了就直接部署一次。
+  # 不依赖"push 触发 deploy-pages": 本 workflow 用 GITHUB_TOKEN 提交,
+  # GitHub 不会为它触发新的 workflow(防递归) —— 实测线上因此停在旧数据。
+  deploy:
+    needs: sync
+    if: needs.sync.outputs.changed == 'true'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/deploy-pages.yml
