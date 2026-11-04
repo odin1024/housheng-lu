@@ -34,8 +34,14 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # workflow_run 触发时: 同步失败就不要部署(免得把半成品数据推上线)
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    # 只有两种来源才构建:
+    #   · 人工/机器 push 到 main, 或手动触发 → 直接构建
+    #   · workflow_run(同步上游完成) → 仅当同步成功
+    # 写成显式三分支, 不依赖表达式短路行为
+    if: |
+      github.event_name == 'push'
+      || github.event_name == 'workflow_dispatch'
+      || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     steps:
       - uses: actions/checkout@v4
         with:
