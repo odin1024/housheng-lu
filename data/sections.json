@@ -5,7 +5,7 @@
     "title": "不要早死",
     "slug": "01-不要早死",
     "caliber": "life",
-    "entryCount": 48
+    "entryCount": 49
   },
   {
     "id": 2,
@@ -101,7 +101,7 @@
     "title": "紧急情况：先做什么",
     "slug": "13-紧急情况",
     "caliber": "life",
-    "entryCount": 48
+    "entryCount": 49
   },
   {
     "id": 14,
@@ -149,7 +149,7 @@
     "title": "在职、离职和工伤",
     "slug": "19-在职离职和工伤",
     "caliber": "money",
-    "entryCount": 24
+    "entryCount": 25
   },
   {
     "id": 20,
@@ -173,7 +173,7 @@
     "title": "怎么放松：娱乐场所和减压",
     "slug": "22-怎么放松",
     "caliber": "time",
-    "entryCount": 12
+    "entryCount": 13
   },
   {
     "id": 23,
@@ -269,6 +269,6 @@
     "title": "家里的常备药别吃出事",
     "slug": "34-家里的常备药别吃出事",
     "caliber": "life",
-    "entryCount": 13
+    "entryCount": 14
   }
 ]
