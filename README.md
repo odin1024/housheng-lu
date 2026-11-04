@@ -2,7 +2,7 @@
 
 ![厚生錄 · 七百余条生计，都在案头](docs/assets/banner.png)
 
-**《高性价比人生指南》的视觉化再刊本** —— 七百六十余条循证生活建议，每条写明花掉什么、换回什么、证据有多硬。
+**《高性价比人生指南》的视觉化再刊本** —— 七百余条循证生活建议，每条写明花掉什么、换回什么、证据有多硬。
 
 [![线上访问](https://img.shields.io/badge/线上访问-odin1024.github.io%2Fhousheng--lu-A82A20?style=flat-square)](https://odin1024.github.io/housheng-lu/)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square)](https://nextjs.org/)
@@ -57,7 +57,7 @@ Unofficial derivative, not affiliated with the original author.
 
 **厚生錄** 是开源电子书《[高性价比人生指南](https://github.com/eternity4719/HowToLiveBetter)》的**视觉化再刊本**。
 
-原书以 Markdown 形式收录了七百六十余条循证生活建议，每条写明成本、收益、证据等级与原始出处。
+原书以 Markdown 形式收录了七百余条循证生活建议，每条写明成本、收益、证据等级与原始出处。
 本项目在不改动原书内容的前提下，将其重新设计为一部**可以翻阅、可以筛查、可以离线急救**的现代古籍善本。
 
 气质上，本项目定位为：
@@ -159,7 +159,7 @@ pnpm dev            # 打开 http://localhost:3000
                              (不入库)                              (入库)
 ```
 
-- `data/entries.json`（七百六十余条，约 2.5MB）等**派生数据已入库**，因此 clone 即用、且数据有版本历史可回滚
+- `data/entries.json`（七百余条，约 2.5MB）等**派生数据已入库**，因此 clone 即用、且数据有版本历史可回滚
 - `content/upstream/`（原始 markdown，6.1MB/320 文件）**不入库**：它是"原料"不是构建必需品，需要时执行 `pnpm sync` 拉取
 - 想更新到最新上游：`pnpm build:data`（= `sync` + `parse`），或设 `FORCE_DATA_SYNC=1` 让构建时强制同步
 - 上游由机器人每日同步：`.github/workflows/sync.yml` 会在数据**真的变化**时提交（解析是幂等的，上游没变就不会产生空提交）

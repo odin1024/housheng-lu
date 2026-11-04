@@ -48,6 +48,24 @@ const STOP_PHRASES = new Set([
 
 const MAX_TERMS = 24;
 
+/**
+ * 量词/数词字符
+ *
+ * 为什么需要: n-gram 会**跨词边界**。实测踩到的坑 —— 问「怎么养一只猫?」会生成
+ * 2 元「养一」，而它恰好出现在「上了 50 岁，给自己培**养一**个爱好…」里，
+ * 于是离题问题拿到 32 分（本该 0），"原书未覆盖"判定失效。
+ *
+ * 规则: 2 元词项的**第二个字**若是数词/量词, 说明它多半是「动词+量词」的碎片
+ * (养一/买一/看一…), 一律丢弃。这样既保住「骤停」「钠盐」「空腹」这类实词,
+ * 又不会把「培养一个」切出「养一」。比维护一堆具体短语更稳 —— 语料每次同步新增文本都不会复发。
+ *
+ * 注: 曾尝试改用 Intl.Segmenter 纯分词, 但实测会丢掉「心脏骤停」这种复合词信号
+ * (top1 从 13-01 掉到 02-43), 故保留 n-gram + 本规则。
+ */
+const MEASURE_TAIL = new Set(
+  '一二三四五六七八九十百千万亿个只条件次部支场份张本台辆间套袋瓶盒包片类种样点些双对副把根块条枚颗'.split(''),
+);
+
 /** 取查询里的候选词项: 小句 + 2~4 元汉字 n-gram, 长词优先 */
 function extractTerms(query: string): string[] {
   const lower = query.toLowerCase().trim();
@@ -72,6 +90,8 @@ function extractTerms(query: string): string[] {
         if ([...gram].every((ch) => PARTICLES.has(ch))) continue;
         // 功能性短语丢弃 (否则会靠"罕见"骗到高 IDF)
         if (STOP_PHRASES.has(gram)) continue;
+        // 2 元且以数词/量词结尾 → 多半是「动词+量词」碎片, 丢弃 (见 MEASURE_TAIL 注释)
+        if (len === 2 && MEASURE_TAIL.has(gram[1])) continue;
         terms.push(gram);
       }
     }

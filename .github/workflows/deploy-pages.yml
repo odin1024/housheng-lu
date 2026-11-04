@@ -8,10 +8,18 @@ name: Deploy to GitHub Pages
 #     此时 /ask 的 AI 部分自动降级为纯检索(页面会显示「未启用（纯检索）」), 站点功能完整。
 #   · 想在公网用 AI, 请用支持 Node 运行时的托管(Vercel / 自建 Node), 见 README「部署」。
 #   · 需要在仓库 Settings → Pages 里把 Source 设为 "GitHub Actions"。
+#   · **为什么还要 workflow_run 触发**: 每日同步(sync.yml) 是用 GITHUB_TOKEN 提交的,
+#     而 GitHub 不会为 GITHUB_TOKEN 推送的提交触发新的 workflow(防递归) ——
+#     只监听 push 的话, 上游数据更新后站点永远不会重新部署(实测线上冻结在 767 条,
+#     而仓库里已是 772 条)。workflow_run 正是为这种链路准备的触发方式。
 
 on:
   push:
     branches: [main]
+  # 每日同步完成后(成功才部署) 再部署一次, 让线上跟上上游数据
+  workflow_run:
+    workflows: ['同步上游']
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -26,8 +34,14 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # workflow_run 触发时: 同步失败就不要部署(免得把半成品数据推上线)
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     steps:
       - uses: actions/checkout@v4
+        with:
+          # workflow_run 默认拉的是"触发它的那个 commit"; 显式拉 main 的最新提交
+          # (同步是先 push 再触发, 所以 main 上已经是新数据)
+          ref: main
 
       # 顺序: pnpm 必须先于 setup-node (cache: 'pnpm' 需要 pnpm 可用)
       # 版本只由 package.json 的 packageManager 决定 (两处都写会报 Multiple versions of pnpm specified)
