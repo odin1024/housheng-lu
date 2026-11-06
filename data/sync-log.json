@@ -1,9 +1,15 @@
 {
-  "lastSync": "2026-11-05T13:55:10.529Z",
-  "upstreamHash": "e2edc2e2ea80635412aac1b0c4f5b465c0fa3133",
+  "lastSync": "2026-11-06T13:41:02.701Z",
+  "upstreamHash": "21ad9068a207fb5f99d7ae60a9ef9a814a45ba20",
   "upstreamUrl": "https://github.com/eternity4719/HowToLiveBetter.git",
   "upstreamTag": "main",
   "syncHistory": [
+    {
+      "date": "2026-11-06T13:41:02.701Z",
+      "hash": "21ad9068a207fb5f99d7ae60a9ef9a814a45ba20",
+      "change": "updated",
+      "status": "success"
+    },
     {
       "date": "2026-11-05T13:55:10.529Z",
       "hash": "e2edc2e2ea80635412aac1b0c4f5b465c0fa3133",
