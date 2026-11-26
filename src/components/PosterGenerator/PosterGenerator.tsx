@@ -496,7 +496,9 @@ export function PosterGenerator() {
     const dataUrl = canvas.toDataURL('image/png');
     setPreviewUrl(dataUrl);
     setPreviewDims({ w, h });
-  }, [selectedEntries, template]);
+    // details 必须在依赖里: 海报正文含"收益/备注", 而它们来自按需加载的详情分片。
+    // 漏掉它会导致分片到位后画面不重绘 (lint 也报了 react-hooks/exhaustive-deps)。
+  }, [selectedEntries, template, details]);
 
   // 模板变化自动重渲染
   useEffect(() => {

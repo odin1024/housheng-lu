@@ -14,10 +14,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit",
+    "type-check": "node scripts/ensure-data.mjs && tsc --noEmit",
     "sync": "node scripts/sync-upstream.mjs",
     "parse": "node scripts/parse-entries.mjs",
     "build:data": "pnpm sync && pnpm parse",
+    "gen:derived": "node scripts/gen-entry-summaries.mjs && node scripts/gen-entry-details.mjs",
     "verify": "node scripts/verify-compliance.mjs",
     "prebuild": "node scripts/ensure-data.mjs"
   },
