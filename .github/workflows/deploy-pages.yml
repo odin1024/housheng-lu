@@ -82,6 +82,43 @@ jobs:
           NEXT_TELEMETRY_DISABLED: 1
         run: pnpm build
 
+      # 自检: 确认这次构建真的用了 checkout 到的那个 commit 的数据。
+      #
+      # 为什么需要: 之前踩过"部署成功但数据没更新"的静默故障 ——
+      # workflow_call 场景下 checkout 默认拉 github.sha(旧 commit), 构建了旧数据,
+      # 从外部完全看不出异常(绿色对勾 + 线上没变)。
+      # 这里把"构建产物里的条目数"与"仓库里的条目数"对比, 不一致就让整个部署失败,
+      # 故障立刻变成红色, 而不是让线上悄悄停在旧数据。
+      - name: 自检: 构建产物是否用了最新数据
+        run: |
+          set -e
+          REPO_ENTRIES=$(node -e "console.log(require('./data/entries.json').length)")
+          echo "仓库条目数: $REPO_ENTRIES"
+          # 首选: 从打包进 client chunk 的统计模块读 (格式稳定, 单行)
+          BUILT_ENTRIES=$(grep -rhoE '"totalEntries":[0-9]+' out/_next/static/chunks/ 2>/dev/null \
+            | head -1 | grep -oE '[0-9]+' || true)
+
+          # 兜底: 从导出的 HTML 里读。
+          # 注意两点:
+          #   1) 必须先 tr 去掉换行 —— HTML 里数字与相邻文字可能不在同一行, grep 逐行匹配会漏
+          #   2) 匹配式里不写中文 —— bash 的 locale 可能是 C, 多字节中文按字节处理会失配
+          if [ -z "$BUILT_ENTRIES" ]; then
+            BUILT_ENTRIES=$(tr -d '\n' < out/index.html \
+              | grep -oE '>[0-9]{3}</div>[[:space:]]*<div[^>]*>' \
+              | head -1 | grep -oE '[0-9]{3}' || true)
+          fi
+
+          echo "构建产物条目数: ${BUILT_ENTRIES:-未找到}"
+          if [ -z "$BUILT_ENTRIES" ]; then
+            echo "::warning::未能从构建产物中读到条目数, 跳过校验(结构可能已变)"
+            exit 0
+          fi
+          if [ "$BUILT_ENTRIES" != "$REPO_ENTRIES" ]; then
+            echo "::error::构建产物条目数($BUILT_ENTRIES) != 仓库条目数($REPO_ENTRIES) —— 部署的是旧数据"
+            exit 1
+          fi
+          echo "OK: 构建产物与仓库数据一致"
+
       # 单页路由的兜底(静态站点直接访问子路径时 404 的兜底页)
       - name: 生成 404 兜底
         run: |
