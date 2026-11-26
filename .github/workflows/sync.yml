@@ -76,18 +76,12 @@ jobs:
   # 数据变了就直接部署一次。
   # 不依赖"push 触发 deploy-pages": 本 workflow 用 GITHUB_TOKEN 提交,
   # GitHub 不会为它触发新的 workflow(防递归) —— 实测线上因此停在旧数据。
+  # 被调用方固定 checkout main 头, 所以这里 push 完再调用即可拿到新数据。
   deploy:
     needs: sync
-    # 三个条件都要满足才部署:
-    #   1. 数据真的变了(没变不折腾)
-    #   2. 同步 job 成功
-    #   3. 拿到了新 commit 的 sha(拿不到就不部署, 免得 checkout 到错误的 ref 直接失败)
-    if: needs.sync.outputs.changed == 'true' && needs.sync.outputs.sha != ''
+    if: needs.sync.outputs.changed == 'true'
     permissions:
       contents: read
       pages: write
       id-token: write
     uses: ./.github/workflows/deploy-pages.yml
-    with:
-      # 明确传"同步刚提交的那个 commit" —— 被调用工作流默认会用 github.sha(旧 commit)
-      ref: ${{ needs.sync.outputs.sha }}
