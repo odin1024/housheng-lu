@@ -20,6 +20,7 @@
     "build:data": "pnpm sync && pnpm parse",
     "gen:derived": "node scripts/gen-entry-summaries.mjs && node scripts/gen-entry-details.mjs",
     "verify": "node scripts/verify-compliance.mjs",
+    "check:workflows": "node scripts/check-workflows.mjs",
     "prebuild": "node scripts/ensure-data.mjs"
   },
   "dependencies": {
@@ -39,6 +40,7 @@
     "postcss": "8.4.47",
     "prettier": "3.3.3",
     "tailwindcss": "3.4.14",
-    "typescript": "5.6.3"
+    "typescript": "5.6.3",
+    "yaml": "^2.9.1"
   }
 }

@@ -38,6 +38,12 @@ jobs:
       - name: 合规检查
         run: pnpm verify
 
+      # 工作流 YAML 语法 —— 必须有。
+      # GitHub 对语法错误的工作流是**完全不运行**(不报错也不排队),
+      # 曾因此让部署静默跳过 25 分钟(见 scripts/check-workflows.mjs 注释)。
+      - name: 工作流语法检查
+        run: pnpm check:workflows
+
       - name: 类型检查
         run: pnpm type-check
 
