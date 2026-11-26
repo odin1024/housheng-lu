@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import type { Entry } from '@/types';
-import { allEntries, getEntryById } from '@/lib/entries';
+import type { EntryDetail, EntrySummary } from '@/types';
+import { allSummaries, getSummaryById } from '@/lib/summaries';
+import { loadEntryDetail } from '@/lib/entry-detail';
 import { create as toast } from '@/lib/toast-store';
 
 type Template = 'square' | 'story' | 'wide';
@@ -50,11 +51,35 @@ export function PosterGenerator() {
   const [previewDims, setPreviewDims] = useState<{ w: number; h: number } | null>(null);
   const [search, setSearch] = useState('');
 
-  const filteredEntries = allEntries
+  const filteredEntries = allSummaries
     .filter((e) => search.length === 0 || e.title.includes(search) || e.id.includes(search))
     .slice(0, 30);
 
-  const selectedEntries = selectedIds.map((id) => getEntryById(id)).filter(Boolean) as Entry[];
+  const selectedEntries = selectedIds
+    .map((id) => getSummaryById(id))
+    .filter(Boolean) as EntrySummary[];
+
+  /**
+   * 海报正文要用"收益 / 备注" (重字段), 所以选中条目时按需拉详情分片。
+   * 详情没到位时先用"说人话"生成, 到位后自动重绘 —— 避免用户干等。
+   */
+  const [details, setDetails] = useState<Record<string, EntryDetail>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    const missing = selectedIds.filter((id) => !(id in details));
+    if (missing.length === 0) return;
+    void Promise.all(missing.map((id) => loadEntryDetail(id))).then((loaded) => {
+      if (cancelled) return;
+      const next: Record<string, EntryDetail> = { ...details };
+      for (const d of loaded) if (d) next[d.id] = d;
+      setDetails(next);
+    });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedIds.join(',')]);
 
   const toggle = (id: string) => {
     setSelectedIds((prev) => {
@@ -72,7 +97,7 @@ export function PosterGenerator() {
   };
 
   // 自适应布局 - 按条目数和模板选最优布局
-  const computeLayout = (entries: Entry[], t: Template) => {
+  const computeLayout = (entries: EntrySummary[], t: Template) => {
     const { w, h } = TEMPLATES[t];
     const isWide = t === 'wide';
     const isStory = t === 'story';
@@ -247,7 +272,10 @@ export function PosterGenerator() {
       );
 
       // 说人话: plainLanguage + benefit + remark, 行数按剩余高度定, 最多 10 行
-      const plainText = [entry.plainLanguage, entry.benefit || '', entry.remark || '']
+      // benefit/remark 是重字段(不在摘要里), 从按需加载的详情分片取;
+      // 详情还没到位时先只用 plainLanguage, 到位后会自动重绘。
+      const det = details[entry.id];
+      const plainText = [entry.plainLanguage, det?.benefit || '', det?.remark || '']
         .filter(Boolean)
         .join(' · ');
       const fixedH = sealSize1 + 50 + titleRows * titleLineH + 30 + 30;
@@ -386,10 +414,11 @@ export function PosterGenerator() {
         // 拼接策略: plainLanguage + benefit 全文 + remark
         // 完整 plainLanguage 50-150 字, benefit 100-400 字, remark 50-200 字
         // 总长度 200-700 字, 配合 truncateToRows 按目标行数 wrap
+        const det = details[entry.id];
         const combined = [
           entry.plainLanguage,
-          entry.benefit || '',
-          entry.remark || '',
+          det?.benefit || '',
+          det?.remark || '',
         ].filter(Boolean).join(' · ');
         const truncated = truncateToRows(
           combined,
@@ -478,6 +507,11 @@ export function PosterGenerator() {
   useEffect(() => {
     if (previewUrl) render();
   }, [selectedIds]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 详情分片加载完 → 重渲染 (让海报补上"收益/备注")
+  useEffect(() => {
+    if (previewUrl) render();
+  }, [details]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const download = () => {
     if (!previewUrl) {

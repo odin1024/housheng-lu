@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { allEntries, getEntryById } from '@/lib/entries';
+import { allSummaries, getSummaryById } from '@/lib/summaries';
 import {
   getMyList,
   removeFromMyList,
@@ -26,13 +26,13 @@ export default function MyPage() {
     return subscribeMyList(() => setList(getMyList()));
   }, []);
 
-  // 用 O(1) 的 id 索引 (lib/entries 已建 Map), 原来是每项 allEntries.find() = O(n)
+  // 用 O(1) 的 id 索引 (lib/summaries 已建 Map), 原来是每项 allEntries.find() = O(n)
   const items = list
     .map((item) => {
-      const entry = getEntryById(item.entryId);
+      const entry = getSummaryById(item.entryId);
       return entry ? { item, entry } : null;
     })
-    .filter(Boolean) as Array<{ item: MyListItem; entry: typeof allEntries[0] }>;
+    .filter(Boolean) as Array<{ item: MyListItem; entry: typeof allSummaries[0] }>;
 
   const filtered = items.filter(({ item }) => {
     if (tab === 'all') return true;

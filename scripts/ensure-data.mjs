@@ -23,15 +23,56 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ENTRIES = join(ROOT, 'data', 'entries.json');
 const SECTIONS = join(ROOT, 'data', 'sections.json');
+const SUMMARIES = join(ROOT, 'data', 'entry-summaries.json');
+const DETAIL_DIR = join(ROOT, 'public', 'entry-detail');
 
 const hasData =
   existsSync(ENTRIES) && statSync(ENTRIES).size > 1024 && existsSync(SECTIONS) && statSync(SECTIONS).size > 2;
+
+/**
+ * 派生数据是否比源数据旧 (或缺失)
+ *
+ * 为什么必须检查:
+ *   entries.json 是唯一的"真相", entry-summaries.json 与 public/entry-detail/*
+ *   都是构建期从它派生出来的。每日同步只会更新 entries.json ——
+ *   如果不重新派生, 站点就会用**旧摘要**渲染, 表现为"同步成功了但线上没变"
+ *   (与之前踩过的 GitHub Pages 那类静默故障同源)。
+ */
+function derivedIsStale() {
+  if (!existsSync(SUMMARIES) || statSync(SUMMARIES).size < 1024) return '摘要文件缺失';
+  if (!existsSync(DETAIL_DIR)) return '详情分片目录缺失';
+
+  const srcMtime = statSync(ENTRIES).mtimeMs;
+  if (statSync(SUMMARIES).mtimeMs < srcMtime) return '摘要比源数据旧';
+
+  // 分片数量应与条目数一致 (抽一个文件判断新旧, 避免遍历 774 个文件)
+  const sample = join(DETAIL_DIR, '01-01.json');
+  if (!existsSync(sample)) return '详情分片样例缺失';
+  if (statSync(sample).mtimeMs < srcMtime) return '详情分片比源数据旧';
+
+  return null;
+}
+
+function regenerateDerived() {
+  console.log('[data] 重新生成派生数据 (摘要 + 详情分片)...');
+  execSync('node scripts/gen-entry-summaries.mjs', { cwd: ROOT, stdio: 'inherit' });
+  execSync('node scripts/gen-entry-details.mjs', { cwd: ROOT, stdio: 'inherit' });
+}
 
 if (process.env.FORCE_DATA_SYNC === '1') {
   console.log('[data] FORCE_DATA_SYNC=1 → 重新同步上游');
 } else if (hasData) {
   const kb = Math.round(statSync(ENTRIES).size / 1024);
   console.log(`[data] 已有 data/entries.json (${kb}KB), 跳过联网同步。`);
+
+  const stale = derivedIsStale();
+  if (stale) {
+    console.log(`[data] 派生数据需要更新: ${stale}`);
+    regenerateDerived();
+  } else {
+    console.log('[data] 摘要与详情分片均是最新, 跳过生成。');
+  }
+
   console.log('[data] 想更新到最新上游: pnpm build:data (或设 FORCE_DATA_SYNC=1)');
   process.exit(0);
 } else {
@@ -39,3 +80,5 @@ if (process.env.FORCE_DATA_SYNC === '1') {
 }
 
 execSync('pnpm sync && pnpm parse', { cwd: ROOT, stdio: 'inherit' });
+// 同步/解析完必须立刻派生, 否则摘要落后于源数据
+regenerateDerived();

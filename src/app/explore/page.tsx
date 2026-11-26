@@ -3,7 +3,7 @@
 import { useState, useMemo, useDeferredValue, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { allEntries, allSections } from '@/lib/entries';
+import { allSummaries, allSections } from '@/lib/summaries';
 import { applyFilter, emptyFilter } from '@/lib/filter';
 import { sortByPriority } from '@/lib/priority';
 import { EntryCard } from '@/components/EntryCard';
@@ -42,7 +42,7 @@ function ExploreContent() {
     [filter, deferredQuery],
   );
 
-  const filtered = useMemo(() => applyFilter(allEntries, effectiveFilter), [effectiveFilter]);
+  const filtered = useMemo(() => applyFilter(allSummaries, effectiveFilter), [effectiveFilter]);
 
   /**
    * 排序 (实测发现的问题与修法):

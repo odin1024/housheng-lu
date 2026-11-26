@@ -1,4 +1,4 @@
-import type { Entry, Ratio } from '@/types';
+import type { Entry, EntrySummary, Ratio } from '@/types';
 
 /**
  * 本站派生指标 (不是原书字段)
@@ -8,14 +8,24 @@ import type { Entry, Ratio } from '@/types';
  * 所以本站不假装有"收益轴", 只基于原书真实字段做可解释的折算:
  *   证据等级 (原书字段, A/B/C) × 成本折算 (钱+时间+毅力) → 先做优先级
  * 折算规则全部写在下面的注释里, 页面也会标注"本站派生"。
+ *
+ * 注意: 这些函数只用到 cost/evidenceLevel/ratio, 完整 Entry 与摘要 EntrySummary
+ * 结构兼容, 所以两者都能传 (客户端只有摘要)。
  */
+
+/** 只要成本与证据等级就够折算 —— 完整条目与摘要条目都满足 */
+type Prioritizable = Pick<Entry, 'cost' | 'evidenceLevel'> & Partial<Pick<Entry, 'ratio'>>;
+type SummaryPrioritizable = Pick<EntrySummary, 'cost' | 'evidenceLevel'>;
+
+/** 排序需要 id (用来在完全同级时保持稳定顺序) */
+type Sortable = (Prioritizable | SummaryPrioritizable) & { id: string };
 
 const COST_MONEY: Record<string, number> = { free: 0, low: 1, medium: 2, high: 3 };
 const COST_TIME: Record<string, number> = { instant: 0, hours: 1, daily: 2 };
 const COST_WILL: Record<string, number> = { none: 0, some: 1, high: 2 };
 
 /** 成本分 0-7: 钱 + 时间 + 毅力 (数值越小越"顺手") */
-export function costScore(e: Entry): number {
+export function costScore(e: Prioritizable | SummaryPrioritizable): number {
   return (
     (COST_MONEY[e.cost?.money] ?? 0) +
     (COST_TIME[e.cost?.time] ?? 0) +
@@ -26,7 +36,7 @@ export function costScore(e: Entry): number {
 export type CostBand = 'zero' | 'low' | 'mid' | 'high';
 
 /** 成本档: 0 分=零成本, 1 分=低成本, 2-3 分=中成本, ≥4 分=高成本 */
-export function costBand(e: Entry): CostBand {
+export function costBand(e: Prioritizable | SummaryPrioritizable): CostBand {
   const s = costScore(e);
   if (s === 0) return 'zero';
   if (s === 1) return 'low';
@@ -61,7 +71,7 @@ export const EVIDENCE_ROWS: Array<'A' | 'B' | 'C'> = ['A', 'B', 'C'];
  *   A 级 + 低成本 / B 级 + 零成本 → 高
  *   其余                     → 一般
  */
-export function priority(e: Entry): Ratio {
+export function priority(e: Prioritizable | SummaryPrioritizable): Ratio {
   const band = costBand(e);
   const lv = e.evidenceLevel;
   if (lv === 'A' && band === 'zero') return 'extreme';
@@ -70,12 +80,12 @@ export function priority(e: Entry): Ratio {
 }
 
 /** 一句话解释这个优先级是怎么来的 */
-export function priorityReason(e: Entry): string {
+export function priorityReason(e: Prioritizable | SummaryPrioritizable): string {
   return `${e.evidenceLevel} 级证据 + ${COST_BAND_LABEL[costBand(e)]}`;
 }
 
 /** 排序键: 优先级高→低, 同级按证据等级, 再按成本分 */
-export function prioritySortKey(e: Entry): [number, number, number] {
+export function prioritySortKey(e: Prioritizable | SummaryPrioritizable): [number, number, number] {
   const p = priority(e);
   const pRank = p === 'extreme' ? 0 : p === 'high' ? 1 : 2;
   const eRank = e.evidenceLevel === 'A' ? 0 : e.evidenceLevel === 'B' ? 1 : 2;
@@ -83,7 +93,7 @@ export function prioritySortKey(e: Entry): [number, number, number] {
 }
 
 /** 按"先做"顺序排序 (不改原数组) */
-export function sortByPriority(entries: Entry[]): Entry[] {
+export function sortByPriority<T extends Sortable>(entries: T[]): T[] {
   return [...entries].sort((a, b) => {
     const ka = prioritySortKey(a);
     const kb = prioritySortKey(b);

@@ -69,6 +69,19 @@ next-env.d.ts
 # 历史遗留, 当前不生成; 保留以防将来重新引入
 /data/search-index.json
 
+# 派生数据 (摘要 + 详情分片) —— **不入库**, 由 prebuild 自动生成
+#
+# 理由: 它们是 data/entries.json 的纯派生品, 每次上游同步都会全量变化。
+#   入库的话, 每天一次提交会带 774 个分片文件 + 700KB 摘要, git 历史迅速膨胀,
+#   而且"源数据"与"派生数据"两份都要保证一致, 反而多一处出错点。
+#
+# 只要 entries.json 在, `pnpm build` 的 prebuild (scripts/ensure-data.mjs)
+# 会检测并在陈旧/缺失时自动重新生成 —— 离线也能构建。
+#
+# 想手动重新生成: node scripts/gen-entry-summaries.mjs && node scripts/gen-entry-details.mjs
+/data/entry-summaries.json
+/public/entry-detail/
+
 # node version
 .node-version
 

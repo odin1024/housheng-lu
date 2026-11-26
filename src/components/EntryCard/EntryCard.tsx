@@ -1,13 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import type { Entry } from '@/types';
+import { useState, useEffect, useRef } from 'react';
+import type { EntryDetail, EntrySummary } from '@/types';
 import { addToMyList, removeFromMyList, isInMyList, updateMyListStatus, subscribeMyList } from '@/lib/storage';
 import { evidenceLabel, ratioLabel, caliberLabel } from '@/lib/labels';
 import { create as toast } from '@/lib/toast-store';
+import { loadEntryDetail } from '@/lib/entry-detail';
 
 interface EntryCardProps {
-  entry: Entry;
+  entry: EntrySummary;
+  /** 已预加载的详情 (服务端渲染详情页时直接传, 免一次 fetch) */
+  detail?: EntryDetail;
   expanded?: boolean;
   onToggle?: () => void;
   showSeal?: boolean;
@@ -17,6 +20,7 @@ interface EntryCardProps {
 
 export function EntryCard({
   entry,
+  detail: initialDetail,
   expanded: controlledExpanded,
   onToggle,
   showSeal = true,
@@ -25,11 +29,50 @@ export function EntryCard({
   const [internalExpanded, setInternalExpanded] = useState(false);
   const expanded = controlledExpanded ?? internalExpanded;
   const [inList, setInList] = useState(false);
+  const [detail, setDetail] = useState<EntryDetail | null>(initialDetail ?? null);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailFailed, setDetailFailed] = useState(false);
 
   useEffect(() => {
     setInList(isInMyList(entry.id));
     return subscribeMyList(() => setInList(isInMyList(entry.id)));
   }, [entry.id]);
+
+  /**
+   * 展开时才拉重字段 (benefit / source / remark / cost.detail)。
+   *
+   * 这是把 1.3MB 数据从首屏挪走的关键: 常驻只带摘要 (357KB),
+   * 展开某条时再取那一条的分片 (约 1.3KB)。
+   *
+   * 注意 cleanup 的语义: 这里**不能**用普通的 `cancelled` 标志 ——
+   * setDetailLoading(true) 会让本 effect 重跑, cleanup 会先把 cancelled 置 true,
+   * 于是 Promise 回来时直接 return, 状态永远停在「正在展卷…」。
+   * (实测踩过: 请求 200、数据正常, 但界面不动。)
+   * 所以改成用 ref 记住"正在加载的是哪一条", 只在条目真的变了才作废。
+   */
+  const loadingFor = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!expanded) return;
+    if (detail) return;
+    if (loadingFor.current === entry.id) return;
+
+    loadingFor.current = entry.id;
+    setDetailLoading(true);
+    setDetailFailed(false);
+
+    void loadEntryDetail(entry.id).then((d) => {
+      // 只有当"当前正在加载的仍是这一条"时才写状态
+      if (loadingFor.current !== entry.id) return;
+      loadingFor.current = null;
+      setDetailLoading(false);
+      if (d) {
+        setDetail(d);
+      } else {
+        setDetailFailed(true);
+      }
+    });
+  }, [expanded, detail, entry.id]);
 
   const toggle = () => {
     if (onToggle) onToggle();
@@ -123,42 +166,59 @@ export function EntryCard({
 
       {expanded && (
         <div className="mt-4 space-y-4">
-          <div>
-            <div className="field-label">收 益</div>
-            <p className="text-base whitespace-pre-wrap">{entry.benefit}</p>
-          </div>
-          <div>
-            <div className="field-label">成 本</div>
-            <p className="text-base">{entry.cost.detail}</p>
-          </div>
-          <div>
-            <div className="field-label">证 据</div>
-            <p className="text-base">
-              {evidenceLabel[entry.evidenceLevel]}
-              {entry.evidenceDetail && ` · ${entry.evidenceDetail}`}
-              {entry.controversy && <span className="text-vermillion ml-2">· 争议</span>}
+          {detailLoading && (
+            <p className="text-sm text-ink-soft" role="status">
+              正在展卷…
             </p>
-          </div>
-          {entry.remark && (
-            <div>
-              <div className="field-label">备 注</div>
-              <p className="text-sm whitespace-pre-wrap">{entry.remark}</p>
-            </div>
           )}
-          <div>
-            <div className="field-label">出 处</div>
-            <p className="text-sm font-mono break-all">
-              {entry.source}
-              {entry.sourceUrl && (
-                <>
-                  {' · '}
-                  <a href={entry.sourceUrl} target="_blank" rel="noopener noreferrer">
-                    原文 ↗
-                  </a>
-                </>
-              )}
+          {detailFailed && (
+            <p className="text-sm text-vermillion" role="alert">
+              展卷内容加载失败（可能是网络问题）。
+              <a href={`/book/${entry.id}`} className="underline ml-1">
+                到详情页查看全文
+              </a>
             </p>
-          </div>
+          )}
+          {detail && (
+            <>
+              <div>
+                <div className="field-label">收 益</div>
+                <p className="text-base whitespace-pre-wrap">{detail.benefit}</p>
+              </div>
+              <div>
+                <div className="field-label">成 本</div>
+                <p className="text-base">{detail.costDetail ?? ''}</p>
+              </div>
+              <div>
+                <div className="field-label">证 据</div>
+                <p className="text-base">
+                  {evidenceLabel[entry.evidenceLevel]}
+                  {detail.evidenceDetail && ` · ${detail.evidenceDetail}`}
+                  {detail.controversy && <span className="text-vermillion ml-2">· 争议</span>}
+                </p>
+              </div>
+              {detail.remark && (
+                <div>
+                  <div className="field-label">备 注</div>
+                  <p className="text-sm whitespace-pre-wrap">{detail.remark}</p>
+                </div>
+              )}
+              <div>
+                <div className="field-label">出 处</div>
+                <p className="text-sm font-mono break-all">
+                  {detail.source}
+                  {detail.sourceUrl && (
+                    <>
+                      {' · '}
+                      <a href={detail.sourceUrl} target="_blank" rel="noopener noreferrer">
+                        原文 ↗
+                      </a>
+                    </>
+                  )}
+                </p>
+              </div>
+            </>
+          )}
           <div className="text-xs text-ink-soft">同步日期 · {entry.syncDate}</div>
         </div>
       )}

@@ -1,13 +1,15 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { allEntries, getEntryById, getEntriesBySection } from '@/lib/entries';
+import { getSummaryById, getSummariesBySection } from '@/lib/summaries';
 import { EntryCard } from '@/components/EntryCard';
+import type { EntryDetail } from '@/types';
 
 export function generateStaticParams() {
   return allEntries.map((e) => ({ id: e.id }));
 }
 
-// 只允许已生成的 765 条 id: 其余一律真 404。
+// 只允许已生成的条目 id: 其余一律真 404。
 // 不加这行时, 由于根级 loading.tsx 会先以 200 冲刷 shell, notFound() 只能软 404 (HTTP 200),
 // 既不语义正确, 又会被 sw.js 的 network-first 把 200 写进缓存 (审计发现)。
 export const dynamicParams = false;
@@ -20,6 +22,21 @@ export default function BookEntryPage({ params }: { params: { id: string } }) {
   const idx = sectionEntries.findIndex((e) => e.id === entry.id);
   const prev = idx > 0 ? sectionEntries[idx - 1] : null;
   const next = idx < sectionEntries.length - 1 ? sectionEntries[idx + 1] : null;
+
+  // 服务端渲染: 摘要 + 详情一起给客户端组件, 免掉展开时的一次 fetch
+  const summary = getSummaryById(params.id);
+  const detail: EntryDetail | undefined = summary
+    ? {
+        id: entry.id,
+        benefit: entry.benefit,
+        source: entry.source,
+        sourceUrl: entry.sourceUrl,
+        evidenceDetail: entry.evidenceDetail,
+        controversy: entry.controversy,
+        remark: entry.remark,
+        costDetail: entry.cost.detail,
+      }
+    : undefined;
 
   return (
     <article className="max-w-narrow mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -38,8 +55,8 @@ export default function BookEntryPage({ params }: { params: { id: string } }) {
         )}
         <Link
           href={`/explore?section=${entry.section}`}
-          // 必须关预取: /explore 的客户端包里有 2.4MB 数据块 (raw) / ~890KB gzip。
-          // 实测(Playwright 时序): 本页 319ms 预取 /explore?section=13 → 340ms 拉下 2427KB,
+          // 必须关预取: /explore 的客户端包里带着全站摘要数据。
+          // 实测(Playwright 时序): 本页 319ms 预取 /explore?section=13 → 340ms 拉下 2.4MB,
           // 于是"每个条目详情页"都悄悄下载了整站数据 (页面自身包只有 6 个脚本)。
           prefetch={false}
           className="text-ink-soft hover:text-vermillion no-underline"
@@ -65,7 +82,11 @@ export default function BookEntryPage({ params }: { params: { id: string } }) {
 
       <hr className="zhu-si-lan" />
 
-      <EntryCard entry={entry} expanded={true} showSeal={false} lead />
+      {summary ? (
+        <EntryCard entry={summary} detail={detail} expanded={true} showSeal={false} lead />
+      ) : (
+        <EntryCard entry={{ ...entry, cost: { ...entry.cost } }} expanded={true} showSeal={false} lead />
+      )}
 
       <hr className="zhu-si-lan" />
 

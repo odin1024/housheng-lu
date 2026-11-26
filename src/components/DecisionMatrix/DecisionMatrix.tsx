@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { allEntries } from '@/lib/entries';
+import { allSummaries } from '@/lib/summaries';
 import { caliberLabel, caliberColor, CALIBERS } from '@/lib/labels';
 import {
   COST_BANDS,
@@ -15,7 +15,7 @@ import {
   sortByPriority,
   type CostBand,
 } from '@/lib/priority';
-import type { Caliber, EvidenceLevel } from '@/types';
+import type { Caliber, EntrySummary, EvidenceLevel } from '@/types';
 
 /**
  * 决策矩阵 (证据 × 成本)
@@ -35,7 +35,7 @@ interface Cell {
   evidence: EvidenceLevel;
   band: CostBand;
   count: number;
-  entries: ReturnType<typeof sortByPriority>;
+  entries: EntrySummary[];
 }
 
 export function DecisionMatrix({ className = '' }: { className?: string }) {
@@ -46,7 +46,7 @@ export function DecisionMatrix({ className = '' }: { className?: string }) {
   });
 
   const filtered = useMemo(
-    () => allEntries.filter((e) => caliber === 'all' || e.caliber === caliber),
+    () => allSummaries.filter((e) => caliber === 'all' || e.caliber === caliber),
     [caliber],
   );
 
