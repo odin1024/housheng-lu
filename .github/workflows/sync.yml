@@ -12,12 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    # 供下面的 deploy job 判断"数据到底有没有变"
+    # 供下面的 deploy job 使用:
+    #   changed —— 数据到底有没有变(没变就不必部署)
+    #   sha     —— 同步刚 push 的那个 commit(部署必须 checkout 这个, 见 deploy-pages.yml 注释)
     outputs:
       changed: ${{ steps.check.outputs.changed }}
+      sha: ${{ steps.commit.outputs.sha }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # 同步要 push, 必须有完整历史(不能用 shallow)
+          fetch-depth: 0
 
       # 顺序: pnpm 必须先于 setup-node (cache: 'pnpm' 需要 pnpm 可用)
       # 版本只由 package.json 的 packageManager 决定 (两处都写会报 Multiple versions of pnpm specified)
@@ -57,6 +63,8 @@ jobs:
           git add data/
           git commit -m "chore(sync): upstream @ $(cd content/upstream && git rev-parse --short HEAD)"
           git push
+          # 把刚 push 的 commit sha 传给 deploy job
+          echo "sha=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
           echo "pushed=true" >> $GITHUB_OUTPUT
 
       - name: 有数据变更时未能推送
@@ -70,9 +78,16 @@ jobs:
   # GitHub 不会为它触发新的 workflow(防递归) —— 实测线上因此停在旧数据。
   deploy:
     needs: sync
-    if: needs.sync.outputs.changed == 'true'
+    # 三个条件都要满足才部署:
+    #   1. 数据真的变了(没变不折腾)
+    #   2. 同步 job 成功
+    #   3. 拿到了新 commit 的 sha(拿不到就不部署, 免得 checkout 到错误的 ref 直接失败)
+    if: needs.sync.outputs.changed == 'true' && needs.sync.outputs.sha != ''
     permissions:
       contents: read
       pages: write
       id-token: write
     uses: ./.github/workflows/deploy-pages.yml
+    with:
+      # 明确传"同步刚提交的那个 commit" —— 被调用工作流默认会用 github.sha(旧 commit)
+      ref: ${{ needs.sync.outputs.sha }}
